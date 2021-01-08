@@ -15,4 +15,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
      * @return User, optional, correspondant à la recherche
      */
     public Optional<User> findUserByEmailIgnoreCase(String email);
+
 }
