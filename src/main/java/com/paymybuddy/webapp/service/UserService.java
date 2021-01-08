@@ -9,10 +9,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+@Transactional
+public class UserService implements IUserService {
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
 
@@ -27,6 +30,7 @@ public class UserService {
      * @param userDto objet à ajouter
      * @return Objet Utilisateur créé
      */
+    @Override
     public User addUser(final UserDto userDto) {
         if (userDto!=null && userDto.getEmail()!=null)
         {
@@ -55,5 +59,14 @@ public class UserService {
         return null;
     }
 
+    @Override
+    public User updateUser(final UserDto userDto) {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return null;
+    }
 
 }
