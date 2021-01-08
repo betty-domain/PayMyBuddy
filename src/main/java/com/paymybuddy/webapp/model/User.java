@@ -2,7 +2,7 @@ package com.paymybuddy.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,14 +45,12 @@ public class User {
     private String lastname;
 
     @NotNull
-    @Size(max=20)
-    @Column(length = 20,nullable = false)
+    @Size(max=80)
+    @Column(length = 80,nullable = false)
     private String password;
 
-    @NotNull
-    @Size(max=12)
     @Column(precision = 12,scale=2)
-    private BigDecimal balance;
+    private BigDecimal balance = new BigDecimal(0);
 
     @OneToMany(mappedBy = "user")
     List<Friendship> friendshipList;
