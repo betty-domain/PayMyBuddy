@@ -64,12 +64,39 @@ public class UserService implements IUserService {
 
     @Override
     public User updateUser(final UserDto userDto) {
-        return null;
+        String errorKey = "update.user.error : ";
+        if (userDto!=null && userDto.getEmail()!=null)
+        {
+            logger.info("Recherche d'un utilisateur par son email avant de modifier un utilisateur");
+            Optional<User> existingUser = userRepository.findUserByEmailIgnoreCase(userDto.getEmail());
+
+            if (!existingUser.isPresent())
+            {
+                logger.error("Impossible de mettre à jour un utilisateur non existant : " + userDto.getEmail());
+                throw new FunctionalException(errorKey +  "Utilisateur inexistant");
+            }
+            else
+            {
+                if (userDto.isValid()) {
+                    User updatedUser = userRepository.save(userDtoMapper.mapToUser(userDto));
+                    logger.info("Mise à jour de l'utilisateur réussie");
+                    return updatedUser;
+                }
+                else
+                {
+                    logger.error("Données de l'entité userDto incorrectes, MAJ impossible");
+                    throw new FunctionalException(errorKey + "Données incorrectes");
+                }
+            }
+        }
+        throw new FunctionalException(errorKey + "Objet ou email null ");
     }
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        logger.info("Recherche de l'ensemble des utilisateurs");
+
+        return userRepository.findAll();
     }
 
 }
