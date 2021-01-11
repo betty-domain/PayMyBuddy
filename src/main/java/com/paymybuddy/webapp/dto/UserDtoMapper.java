@@ -15,8 +15,6 @@ public abstract class UserDtoMapper {
     @Autowired
     private EncryptUtils encryptUtils;
 
-    public abstract UserDto mapfromUser(User user);
-
     @Mapping(target = "password", source="password", qualifiedByName = "encryptPassword")
     public abstract User mapToUser(UserDto userDto);
 

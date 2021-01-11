@@ -9,4 +9,9 @@ public class FunctionalException extends RuntimeException{
     {
         super(message);
     }
+
+    @Override
+    public synchronized Throwable fillInStackTrace() {
+        return this;
+    }
 }

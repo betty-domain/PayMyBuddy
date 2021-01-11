@@ -2,6 +2,7 @@ package com.paymybuddy.webapp.service;
 
 import com.paymybuddy.webapp.dto.UserDto;
 import com.paymybuddy.webapp.dto.UserDtoMapper;
+import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +32,9 @@ public class UserService implements IUserService {
      * @return Objet Utilisateur créé
      */
     @Override
-    public User addUser(final UserDto userDto) {
+    public User addUser(final UserDto userDto) throws FunctionalException {
+
+        String errorKey = "add.user.error : ";
         if (userDto!=null && userDto.getEmail()!=null)
         {
             logger.info("Recherche d'un utilisateur par son email avant de créer un nouvel utilisateur");
@@ -40,7 +43,7 @@ public class UserService implements IUserService {
             if (existingUser.isPresent())
             {
                 logger.error("Impossible d'ajouter un utilisateur déjà existant : " + userDto.getEmail());
-                return null;
+                throw new FunctionalException(errorKey +  "Utilisateur déjà existant");
             }
             else
             {
@@ -52,11 +55,11 @@ public class UserService implements IUserService {
                 else
                 {
                     logger.error("Données de l'entité userDto incorrectes, ajout impossible");
-                    return null;
+                    throw new FunctionalException(errorKey + "Données incorrectes");
                 }
             }
         }
-        return null;
+        throw new FunctionalException(errorKey + "Objet ou email null ");
     }
 
     @Override

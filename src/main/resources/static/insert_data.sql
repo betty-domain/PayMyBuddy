@@ -11,7 +11,7 @@ INSERT INTO `paymybuddy`.`user`(`email`,`firstname`,`lastname`,`password`)
 VALUES ('ron.weasley@gmail.com','Ron','Weasley','$2a$12$tc8qg.uvMUOxo7tssDnU5eSSL2qAIK4V1jsY7z3Agt46u1QJfbsIa');
 
 
-
+//betty.domain@free.fr, MyPassword
 //Harry potter, mdp:potter
 //Hermione Granger, mdp:granger
 //Ron Weasley, mdp:weasley

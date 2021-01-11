@@ -24,21 +24,19 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/user")
-    public User addUser(@Validated @RequestBody UserDto userDto)
+    public User addUser(@Validated @RequestBody UserDto userDto) throws FunctionalException
     {
         logger.info("Requête Post sur le endpoint user reçue");
 
         User createdUser = userService.addUser(userDto);
-        if (createdUser !=null)
-        {
+        if (createdUser != null) {
             logger.info("Réponse Post sur le endpoint user transmise");
-            return  createdUser;
-        }
-        else
-        {
+            return createdUser;
+        } else {
             logger.error("Erreur lors de la requête Post sur le endpoint user ");
             throw new FunctionalException("user.add.error");
         }
+
     }
 
     @PutMapping("/user")
