@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
@@ -24,13 +26,17 @@ public class BankAccount {
     private Integer id;
 
     @NotNull
+    @NotEmpty
+    @Size(max = 34)
     private String iban;
 
     @Column(name = "is_actif")
     @NotNull
-    private boolean isActif;
+    private boolean isActif = true;
 
     @NotNull
+    @NotEmpty
+    @Size(max = 50)
     private String description;
 
     @ManyToOne
