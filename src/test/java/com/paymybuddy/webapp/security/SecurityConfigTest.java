@@ -28,7 +28,8 @@ public class SecurityConfigTest {
         return "http://localhost:" + port + "/users";
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testAccessWithoutAuth()
     {
         //TODO : voir pourquoi ce test renvoit quand même un code 200 et redrection vers la page de login et non une 401 comme dans Postman

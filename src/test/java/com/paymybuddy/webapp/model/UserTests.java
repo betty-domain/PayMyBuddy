@@ -1,12 +1,16 @@
 package com.paymybuddy.webapp.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,19 +32,15 @@ public class UserTests {
         user.setTransactionList(new ArrayList<>());
         user.setLastname("lastname");
 
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String result = new ObjectMapper().writeValueAsString(user);
+        JsonNode jsonNode = objectMapper.readTree(result);
 
-        assertThat(result).contains("23");
-        assertThat(result).contains("\"email\"");
-        assertThat(result).contains("\"lastname\"");
-        assertThat(result).contains("\"firstname\"");
-        assertThat(result).contains("\"password\"");
-        assertThat(result).contains("\"balance\"");
-        assertThat(result).contains("\"friendshipList\"");
+        List<String> fieldsNames = Lists.newArrayList(jsonNode.fieldNames());
 
-        assertThat(result).doesNotContain("\"bankAccountList\"");
-        assertThat(result).doesNotContain("\"bankTransferList\"");
-        assertThat(result).doesNotContain("\"transactionList\"");
+        assertThat(fieldsNames).containsAll(Arrays.asList(new String[]{"id","email","lastname","firstname","password","balance","friendshipList"}));
+        assertThat(fieldsNames).doesNotContainAnyElementsOf(Arrays.asList(new String[]{"bankAccountList","bankTransferList","transactionList"}));
 
     }
 }

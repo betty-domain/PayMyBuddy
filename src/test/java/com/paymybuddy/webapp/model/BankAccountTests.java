@@ -1,12 +1,16 @@
 package com.paymybuddy.webapp.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,14 +35,14 @@ public class BankAccountTests {
 
         user.getBankAccountList().add(bankAccount);
 
+        ObjectMapper objectMapper = new ObjectMapper();
         String result = new ObjectMapper().writeValueAsString(bankAccount);
+        JsonNode jsonNode = objectMapper.readTree(result);
 
-        assertThat(result).contains("150");
-        assertThat(result).contains("\"iban\"");
-        assertThat(result).doesNotContain("\"isActif\"");
-        assertThat(result).contains("\"description\"");
-        assertThat(result).contains("\"user\"");
+        List<String> fieldsNames = Lists.newArrayList(jsonNode.fieldNames());
 
+        assertThat(fieldsNames).containsAll(Arrays.asList(new String[]{"id","iban","description","user"}));
+        assertThat(fieldsNames).doesNotContainAnyElementsOf(Arrays.asList(new String[]{"isActif"}));
 
     }
 }

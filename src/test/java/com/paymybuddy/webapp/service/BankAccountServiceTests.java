@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -109,7 +110,9 @@ public class BankAccountServiceTests {
         when(bankAccountRepositoryMock.findByIbanAndUser_Id(bankAccountDto.getIban(), bankAccountDto.getUserId())).thenReturn(Optional.empty());
         when(bankAccountRepositoryMock.save(bankAccountDtoMapper.mapToBankAccount(bankAccountDto, new User()))).thenReturn(createdBankAccount);
 
+
         assertThat(bankAccountService.addBankAccount(bankAccountDto)).isEqualTo(createdBankAccount);
+        verify(bankAccountRepositoryMock,Mockito.times(1)).save(any());
 
     }
 

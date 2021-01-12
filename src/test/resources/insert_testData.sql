@@ -18,4 +18,10 @@ VALUES ('Iban To Delete','BankAccountToDelete',true,1);
 INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
 VALUES ('FR12345','Potter iban fr12345',true,2);
 
+INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
+VALUES ('FR12345','Granger iban ',true,3);
+
+INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
+VALUES ('FR12345','Weasley iban ',true,4);
+
 /*``*/
