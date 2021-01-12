@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface BankAccountRepository extends JpaRepository<BankAccount,Integer> {
 
-    Optional<BankAccount> findByIdAndUser_id(Integer bankAccountId, Integer userId);
+    Optional<BankAccount> findByIdAndIsActifTrueAndUser_id(Integer bankAccountId, Integer userId);
 
     Optional<BankAccount> findByIbanAndUser_Id(String iban, Integer userId);
 }

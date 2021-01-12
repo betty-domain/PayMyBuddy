@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -30,15 +32,17 @@ public class BankTransfer {
     private BigDecimal amount;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private LocalDate date;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "transfer_order")
-    private BankTransferOrder transfer_order;
+    private BankTransferOrder transferOrder;
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne

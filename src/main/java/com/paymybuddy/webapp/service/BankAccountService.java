@@ -57,6 +57,7 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public boolean deleteBankAccount(final Integer bankAccountId) throws FunctionalException {
+        //TODO : à revoir pour désactiver le compte et non pas le supprimer si fontionnement attendu (à confirmer avec Alexandre)
         String errorKey = "bankAccount.delete.error";
         if (bankAccountId == null) {
             throw new FunctionalException(errorKey+"Données incorrectes");
