@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.function.Function;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -81,4 +82,29 @@ public class BankAccountControllerTests {
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void deleleBankAccountStatusOk() throws Exception
+    {
+        when(bankAccountService.deleteBankAccount(anyInt())).thenReturn(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bankAccount").
+                contentType(MediaType.APPLICATION_JSON).param("bankAccountId", "1");
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteBankAccountBadRequest() throws Exception
+    {
+        given(bankAccountService.deleteBankAccount(anyInt())).willThrow(
+                new FunctionalException("Exception Message"));
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bankAccount").
+                contentType(MediaType.APPLICATION_JSON).param("bankAccountId","1");
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest());
+    }
+
 }

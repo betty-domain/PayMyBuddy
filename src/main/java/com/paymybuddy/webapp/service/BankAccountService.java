@@ -35,22 +35,6 @@ public class BankAccountService implements IBankAccountService {
     public BankAccount addBankAccount(final BankAccountDto bankAccountDto) throws FunctionalException {
         String errorKey = "bankAccount.add.error :";
 
-        if (isPossibleToSaveBankAccount(bankAccountDto, errorKey)) {
-            return bankAccountRepository.save(bankAccountDtoMapper.mapToBankAccount(bankAccountDto));
-        } else {
-            logger.error("Impossible d'enregistrer le compte bancaire");
-            return null;
-        }
-    }
-
-    /**
-     * Vérifie les conditions nécessaires à l'enregistrement d'un BankAccount
-     *
-     * @param bankAccountDto
-     * @param errorKey
-     * @return
-     */
-    private boolean isPossibleToSaveBankAccount(BankAccountDto bankAccountDto, String errorKey) {
         if (bankAccountDto != null && bankAccountDto.isValid()) {
             logger.info("Vérification que l'utilisateur existe");
             Optional<User> existingUser = userRepository.findById(bankAccountDto.getUserId());
@@ -60,7 +44,8 @@ public class BankAccountService implements IBankAccountService {
                 if (existingBankAccount.isPresent()) {
                     throw new FunctionalException(errorKey + "Iban déjà existant pour cet utilisateur");
                 } else {
-                    return true;
+                    BankAccount bankAccountToSave = bankAccountDtoMapper.mapToBankAccount(bankAccountDto, existingUser.get());
+                    return bankAccountRepository.save(bankAccountToSave);
                 }
             } else {
                 throw new FunctionalException(errorKey + "Utilisateur inconnu");
@@ -68,7 +53,6 @@ public class BankAccountService implements IBankAccountService {
         } else {
             throw new FunctionalException(errorKey + " Données incorrectes");
         }
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.paymybuddy.webapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ public class BankAccount {
 
     @Column(name = "is_actif")
     @NotNull
+    @JsonIgnore
     private boolean isActif = true;
 
     @NotNull
@@ -43,5 +45,17 @@ public class BankAccount {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    public BankAccount()
+    {
 
+    }
+
+    public BankAccount(Integer id, String iban, boolean isActif, String description, User user )
+    {
+        this.id = id;
+        this.iban= iban;
+        this.isActif = isActif;
+        this.description  = description;
+        this.user=user;
+    }
 }
