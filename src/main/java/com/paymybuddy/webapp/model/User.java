@@ -55,14 +55,17 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<Friendship> friendshipList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "payer")
     List<Transaction> transactionList;
 
     //TODO : voir si cette propriété sera utilisée ou non à partir de l'objet utilisateur
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<BankAccount> bankAccountList;
 
     //TODO : voir si cette propriété sera utilisée ou non à partir de l'objet utilisateur
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<BankTransfer> bankTransferList;
 }

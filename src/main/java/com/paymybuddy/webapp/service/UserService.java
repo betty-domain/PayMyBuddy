@@ -78,7 +78,9 @@ public class UserService implements IUserService {
             else
             {
                 if (userDto.isValid()) {
-                    User updatedUser = userRepository.save(userDtoMapper.mapToUser(userDto));
+                    User userToSave = userDtoMapper.mapToUser(userDto);
+                    userToSave.setId(existingUser.get().getId());
+                    User updatedUser = userRepository.save(userToSave);
                     logger.info("Mise à jour de l'utilisateur réussie");
                     return updatedUser;
                 }
