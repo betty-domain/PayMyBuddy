@@ -11,7 +11,9 @@ import com.paymybuddy.webapp.service.MyUserDetailsService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
@@ -29,8 +31,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BankAccountController.class)
-@Disabled
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc(addFilters = false)
 public class BankAccountControllerTests {
 
     @MockBean
@@ -87,7 +89,7 @@ public class BankAccountControllerTests {
     public void deleleBankAccountStatusOk() throws Exception
     {
         when(bankAccountService.deleteBankAccount(anyInt())).thenReturn(true);
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bankAccount").
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/bankAccount").
                 contentType(MediaType.APPLICATION_JSON).param("bankAccountId", "1");
 
         mockMvc.perform(builder).
@@ -100,7 +102,7 @@ public class BankAccountControllerTests {
         given(bankAccountService.deleteBankAccount(anyInt())).willThrow(
                 new FunctionalException("Exception Message"));
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bankAccount").
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/bankAccount").
                 contentType(MediaType.APPLICATION_JSON).param("bankAccountId","1");
 
         mockMvc.perform(builder).
