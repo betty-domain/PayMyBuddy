@@ -1,5 +1,6 @@
 package com.paymybuddy.webapp.service;
 
+import com.paymybuddy.webapp.dto.BankAccountDtoMapper;
 import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.dto.BankTransferDtoMapper;
 import com.paymybuddy.webapp.dto.BankTransferListDto;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,6 +34,9 @@ public class BankTransferService implements IBankTransferService {
 
     @Autowired
     private BankTransferDtoMapper bankTransferDtoMapper;
+
+    @Autowired
+    private BankAccountDtoMapper bankAccountDtoMapper;
 
     @Autowired
     private BankTransferListDtoMapper bankTransferListDtoMapper;
@@ -101,31 +106,24 @@ public class BankTransferService implements IBankTransferService {
 
     @Override
     public BankTransferListDto getAllTransferForUser(final Integer userId) throws FunctionalException {
-
-        //TODO : à compléter pour modifier l'objet retourné : User  liste des transferts et vérifier si l'utilisateur n'existe pas avant de retourner la liste
         String errorKey = "bankTransfer.get.error: ";
         if (userId != null) {
             Optional<User> existingUser = userRepository.findById(userId);
             if (existingUser.isPresent()) {
 
-                //on récupère la liste des transferts bancaires de l'utilisateur
-                List<BankTransfer> bankTransferList = existingUser.get().getBankTransferList();
-
                 BankTransferListDto bankTransferListDto = bankTransferListDtoMapper.mapToBankTransferListDto(existingUser.get());
 
+                //on récupère la liste des comptes bancaires pour lesquels il y a eu des transferts d'argent
+                List<BankAccount> bankAccountList =existingUser.get().getBankAccountList().stream().filter(
+                        bankAccount -> bankAccount.getBankTransferList()!=null && bankAccount.getBankTransferList().size()>0
+                ).collect(Collectors.toList());
+
                 //pour chaque compte bancaire, on trie les transferts bancaires par date
-                existingUser.get().getBankAccountList().stream().forEach(bankAccount -> {
+                bankAccountList.stream().forEach(bankAccount -> {
                     bankAccount.getBankTransferList().stream().sorted((object1, object2) -> object2.getDate().compareTo(object1.getDate()));
                 });
 
-
-                /*bankTransferListDto.getBankAccountDtoList().stream().forEach(bankAccountDtoIterator -> {
-                    List<BankTransfer> bankTransferListForThisBankAccount = bankTransferList.stream()
-                            .filter(bankTransferIterator -> bankTransferIterator.getBankAccount().getId().equals(bankAccountDtoIterator.getId()))
-                            .sorted((object1, object2) -> object2.getDate().compareTo(object1.getDate())).collect(Collectors.toList());
-
-                    bankAccountDtoIterator.setBankTransferDtoList(bankTransferDtoMapper.mapFromBankTransferList(bankTransferListForThisBankAccount));
-                });*/
+                bankTransferListDto.setBankAccountDtoList(bankAccountDtoMapper.mapListFromBankAccountList(bankAccountList));
 
                 return bankTransferListDto;
             } else {

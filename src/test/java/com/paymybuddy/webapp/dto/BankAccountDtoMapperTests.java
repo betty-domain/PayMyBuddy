@@ -4,7 +4,6 @@ import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.BankTransferOrder;
 import com.paymybuddy.webapp.model.User;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,23 +15,19 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @SpringBootTest
-public class BankAccountDtoMapperTests {
+class BankAccountDtoMapperTests {
 
     @Autowired
     private BankAccountDtoMapper bankAccountDtoMapper;
 
-
     @Test
-    public void mapToBankAccountWithNullObjects()
-    {
-        assertThat(bankAccountDtoMapper.mapToBankAccount(null,null)).isNull();
+    void mapToBankAccountWithNullObjects() {
+        assertThat(bankAccountDtoMapper.mapToBankAccount(null, null)).isNull();
     }
 
     @Test
-    public void mapToBankAccount_WithValidData()
-    {
+    void mapToBankAccount_WithValidData() {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setDescription("description");
         bankAccountDto.setIban("iban");
@@ -43,7 +38,7 @@ public class BankAccountDtoMapperTests {
         User user = new User();
         user.setId(bankAccountDto.getUserId());
 
-        BankAccount mappedBankAccount = bankAccountDtoMapper.mapToBankAccount(bankAccountDto,user);
+        BankAccount mappedBankAccount = bankAccountDtoMapper.mapToBankAccount(bankAccountDto, user);
 
         assertThat(mappedBankAccount.getId()).isEqualTo(bankAccountDto.getId());
         assertThat(mappedBankAccount.getUser()).isEqualTo(user);
@@ -53,33 +48,76 @@ public class BankAccountDtoMapperTests {
     }
 
     @Test
-    public void mapFromBankAccount_WithNullBankAccount(){
+    void mapFromBankAccount_WithNullBankAccount() {
         assertThat(bankAccountDtoMapper.mapFromBankAccount(null)).isNull();
     }
 
     @Test
-    public void mapFromBankAccount_ValidMapping(){
+    void mapFromBankAccount_ValidMapping() {
         User user = new User();
         user.setId(40);
 
         BankTransfer bankTransfer = new BankTransfer();
         bankTransfer.setTransferOrder(BankTransferOrder.FROM_BANK);
         bankTransfer.setUser(user);
-        bankTransfer.setDate(LocalDate.of(2014,3,12));
+        bankTransfer.setDate(LocalDate.of(2014, 3, 12));
         bankTransfer.setAmount(new BigDecimal(54.25));
         bankTransfer.setId(452);
         List<BankTransfer> bankTransferList = new ArrayList<>();
         bankTransferList.add(bankTransfer);
 
-        BankAccount bankAccount = new BankAccount(5,"iban",false,"description",user);
+        BankAccount bankAccount = new BankAccount(5, "iban", false, "description", user);
         bankAccount.setBankTransferList(bankTransferList);
 
-        BankAccountDto bankAccountDto =bankAccountDtoMapper.mapFromBankAccount(bankAccount);
+        BankAccountDto bankAccountDto = bankAccountDtoMapper.mapFromBankAccount(bankAccount);
 
         assertThat(bankAccountDto.getId()).isEqualTo(bankAccount.getId());
         assertThat(bankAccountDto.getDescription()).isEqualTo(bankAccount.getDescription());
         assertThat(bankAccountDto.getIban()).isEqualTo(bankAccount.getIban());
         assertThat(bankAccountDto.getUserId()).isEqualTo(bankAccount.getUser().getId());
         assertThat(bankAccountDto.getBankTransferDtoList().size()).isEqualTo(bankAccount.getBankTransferList().size());
+    }
+
+    @Test
+    void mapListFromBankAccountList_NullObject() {
+        assertThat(bankAccountDtoMapper.mapListFromBankAccountList(null)).isNull();
+    }
+
+    @Test
+    void mapListFromBankAccountList_ValidMapping() {
+        List<BankAccount> bankAccountList = new ArrayList<>();
+
+        //given 1 compte bancaire avec 2 transferts d'argent
+        BankAccount bankAccount = new BankAccount(5, "iban", false, "description", new User());
+
+        List<BankTransfer> bankTransferList = new ArrayList<>();
+        BankTransfer bankTransfer = new BankTransfer(452, new BigDecimal(54.25), LocalDate.of(2014, 3, 12), BankTransferOrder.FROM_BANK);
+        bankTransfer.setBankAccount(bankAccount);
+        bankTransferList.add(bankTransfer);
+
+        BankTransfer bankTransfer2 = new BankTransfer(220, new BigDecimal(5401), LocalDate.of(2010, 1, 1), BankTransferOrder.TO_BANK);
+        bankTransfer2.setBankAccount(bankAccount);
+        bankTransferList.add(bankTransfer2);
+
+        bankAccount.setBankTransferList(bankTransferList);
+        bankAccountList.add(bankAccount);
+
+        //given 1 compte bancaire avec un transfert d'argent
+        BankAccount bankAccount2 = new BankAccount(15, "iban", true, "description", new User());
+        List<BankTransfer> bankTransferList_2 = new ArrayList<>();
+        BankTransfer bankTransfer3 = new BankTransfer(45, new BigDecimal(54.25), LocalDate.of(2014, 3, 12), BankTransferOrder.FROM_BANK);
+        bankTransfer3.setBankAccount(bankAccount2);
+        bankTransferList_2.add(bankTransfer3);
+
+        bankAccount2.setBankTransferList(bankTransferList_2);
+        bankAccountList.add(bankAccount2);
+
+        List<BankAccountDto> bankAccountDtoList = bankAccountDtoMapper.mapListFromBankAccountList(bankAccountList);
+
+        assertThat(bankAccountDtoList.size()).isEqualTo(2);
+
+        assertThat(bankAccountDtoList.get(0).getBankTransferDtoList().size()).isEqualTo(2);
+        assertThat(bankAccountDtoList.get(1).getBankTransferDtoList().size()).isEqualTo(1);
+
     }
 }

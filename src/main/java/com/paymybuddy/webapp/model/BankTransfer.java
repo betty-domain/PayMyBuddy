@@ -49,4 +49,14 @@ public class BankTransfer {
     @JoinColumn(name="bank_account_id", nullable = false)
     private BankAccount bankAccount;
 
+    public BankTransfer(){}
+
+    public BankTransfer(Integer id, BigDecimal amount, LocalDate date, BankTransferOrder bankTransferOrder)
+    {
+        this.id = id;
+        this.amount=amount;
+        this.date = date;
+        this.transferOrder = bankTransferOrder;
+    }
+
 }
