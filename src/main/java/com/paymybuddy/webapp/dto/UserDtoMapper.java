@@ -35,4 +35,6 @@ public abstract class UserDtoMapper {
         return encryptUtils.encodePassword(password);
     }
 
+    public abstract UserDto mapFromUser(User user);
+
 }

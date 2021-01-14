@@ -14,6 +14,7 @@ import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class BankTransferDtoMapper {
@@ -34,5 +35,12 @@ public abstract class BankTransferDtoMapper {
     @Autowired
     DateUtils dateUtils;
 
+    @Mappings({
+            @Mapping(target="userId", source="bankTransfer.user.id"),
+            @Mapping(target="bankAccountId", source="bankTransfer.bankAccount.id")
 
+    })
+    public abstract BankTransferDto mapFromBankTransfer(BankTransfer bankTransfer);
+
+    public abstract List<BankTransferDto> mapFromBankTransferList(List<BankTransfer> bankTransferList);
 }

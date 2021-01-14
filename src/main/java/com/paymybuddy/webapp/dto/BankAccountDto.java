@@ -1,29 +1,40 @@
 package com.paymybuddy.webapp.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 public class BankAccountDto {
 
+    @JsonView(DtoJsonView.Private.class)
     private Integer id;
 
     @NotNull
     @NotEmpty
     @Size(max = 34)
+    @JsonView(DtoJsonView.Public.class)
     private String iban;
 
     @NotNull
     @NotEmpty
     @Size(max = 50)
+    @JsonView(DtoJsonView.Public.class)
     private String description;
 
     @NotNull
+    @JsonView(DtoJsonView.Private.class)
     private Integer userId;
+
+    @JsonView(DtoJsonView.Public.class)
+    private List<BankTransferDto> bankTransferDtoList;
+
 
     /**
      * Vérifie si l'objet est valide
