@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @Data
 public class UserDto {
@@ -30,6 +31,8 @@ public class UserDto {
     @NotEmpty
     @Size(max = 20)
     private String password;
+
+    private BigDecimal balance;
 
     /**
      * Vérifie que les propriétés de l'entité UserDto sont valides fonctionnellement

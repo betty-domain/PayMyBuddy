@@ -4,19 +4,30 @@ import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.utils.EncryptUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+
 public abstract class UserDtoMapper {
 
     @Autowired
     private EncryptUtils encryptUtils;
 
-    @Mapping(target = "password", source="password", qualifiedByName = "encryptPassword")
+    @Mappings({
+            @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword")
+    })
     public abstract User mapToUser(UserDto userDto);
+
+    @Mappings({
+            @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword")
+    })
+    public abstract void updateUserFromUserDto(UserDto userDto, @MappingTarget User user);
 
     @Named("encryptPassword")
     public String getEncryptPassword(String password) {
