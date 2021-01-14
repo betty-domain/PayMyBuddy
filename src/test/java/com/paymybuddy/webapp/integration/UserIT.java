@@ -50,8 +50,8 @@ public class UserIT {
     @Test
     public void updateUserTest()
     {
-//TODO : comprendre pouruqoi existingUser est mis à jour lors du save alors qu'on s'attend à ce que cet objet ne bouge pas justement pour pouvoir vérifier les valeurs après l'update
         User existingUser = userRepository.findUserByEmailIgnoreCase("updateUser@free.fr").get();
+        String password = existingUser.getPassword();
 
         UserDto userDtoTest = new UserDto();
         userDtoTest.setFirstname("firstname modified");
@@ -64,7 +64,7 @@ public class UserIT {
         assertThat(user.getId()).isEqualTo(existingUser.getId());
         assertThat(user.getLastname()).isEqualTo(userDtoTest.getLastname());
         assertThat(user.getFirstname()).isEqualTo(userDtoTest.getFirstname());
-        assertThat(user.getPassword()).isNotEqualTo(existingUser.getPassword());
+        assertThat(user.getPassword()).isNotEqualTo(password);
         assertThat(user.getBalance()).isEqualTo(existingUser.getBalance());
         assertThat(user.getBankAccountList()).isEqualTo(existingUser.getBankAccountList());
         assertThat(user.getBankTransferList()).isEqualTo(existingUser.getBankTransferList());
