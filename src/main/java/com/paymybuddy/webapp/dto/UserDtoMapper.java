@@ -20,7 +20,8 @@ public abstract class UserDtoMapper {
     private EncryptUtils encryptUtils;
 
     @Mappings({
-            @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword")
+            @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword"),
+            @Mapping(target="balance", ignore = true)
     })
     public abstract User mapToUser(UserDto userDto);
 

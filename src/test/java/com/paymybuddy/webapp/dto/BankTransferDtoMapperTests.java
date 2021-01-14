@@ -2,6 +2,7 @@ package com.paymybuddy.webapp.dto;
 
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.BankTransfer;
+import com.paymybuddy.webapp.model.BankTransferOrder;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.utils.DateUtils;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -51,6 +54,8 @@ public class BankTransferDtoMapperTests {
         bankTransferDto.setAmount(new BigDecimal(250.58));
         bankTransferDto.setUserId(userId);
         bankTransferDto.setBankAccountId(bankAccountId);
+        bankTransferDto.setDate(LocalDate.of(2000,1,1));
+        bankTransferDto.setTransferOrder(BankTransferOrder.TO_BANK);
 
         BankTransfer bankTransfer = bankTransferDtoMapper.mapToBankTransfer(bankTransferDto,bankAccount);
 
@@ -59,7 +64,74 @@ public class BankTransferDtoMapperTests {
         assertThat(bankTransfer.getDate()).isEqualTo(localDateNowMock);
         assertThat(bankTransfer.getUser()).isEqualTo(bankAccount.getUser());
         assertThat(bankTransfer.getId()).isNull();
-        assertThat(bankTransfer.getTransferOrder()).isNull();
+        assertThat(bankTransfer.getTransferOrder()).isEqualTo(bankTransferDto.getTransferOrder());
 
     }
+
+    @Test
+    public void mapFromBankTransfer_WithNullObject()
+    {
+        assertThat(bankTransferDtoMapper.mapFromBankTransfer(null)).isNull();
+    }
+
+    @Test
+    public void mapFromBankTransfer_ValidMapping()
+    {
+        User user = new User();
+        user.setId(47);
+
+        BankAccount bankAccount = new BankAccount(15,"iban",false,"description", null);
+
+        BankTransfer bankTransfer = new BankTransfer();
+        bankTransfer.setTransferOrder(BankTransferOrder.TO_BANK);
+        bankTransfer.setAmount(new BigDecimal(54.25));
+        bankTransfer.setDate(LocalDate.of(2020,10,15));
+        bankTransfer.setId(42);
+        bankTransfer.setBankAccount(bankAccount);
+        bankTransfer.setUser(user);
+
+        BankTransferDto bankTransferDto = bankTransferDtoMapper.mapFromBankTransfer(bankTransfer);
+
+        assertThat(bankTransferDto.getTransferOrder()).isEqualTo(bankTransfer.getTransferOrder());
+        assertThat(bankTransferDto.getAmount()).isEqualTo(bankTransfer.getAmount());
+        assertThat(bankTransferDto.getDate()).isEqualTo(bankTransfer.getDate());
+        assertThat(bankTransferDto.getBankAccountId()).isEqualTo(bankAccount.getId());
+        assertThat(bankTransferDto.getUserId()).isEqualTo(user.getId());
+    }
+
+    @Test
+    public void mapFromBankTransferList_WithNullObject()
+    {
+        assertThat(bankTransferDtoMapper.mapFromBankTransferList(null)).isNull();
+    }
+
+    @Test
+    public void mapFromBankTransferList_ValidMapping()
+    {
+        User user = new User();
+        user.setId(47);
+
+        BankAccount bankAccount = new BankAccount(15,"iban",false,"description", null);
+
+        BankTransfer bankTransfer = new BankTransfer();
+        bankTransfer.setTransferOrder(BankTransferOrder.TO_BANK);
+        bankTransfer.setAmount(new BigDecimal(54.25));
+        bankTransfer.setDate(LocalDate.of(2020,10,15));
+        bankTransfer.setId(42);
+        bankTransfer.setBankAccount(bankAccount);
+        bankTransfer.setUser(user);
+
+        List<BankTransfer> bankTransferList = new ArrayList<>();
+        bankTransferList.add(bankTransfer);
+        bankTransferList.add(bankTransfer);
+
+        BankTransferDto bankTransferDto = bankTransferDtoMapper.mapFromBankTransfer(bankTransfer);
+
+        assertThat(bankTransferDto.getTransferOrder()).isEqualTo(bankTransfer.getTransferOrder());
+        assertThat(bankTransferDto.getAmount()).isEqualTo(bankTransfer.getAmount());
+        assertThat(bankTransferDto.getDate()).isEqualTo(bankTransfer.getDate());
+        assertThat(bankTransferDto.getBankAccountId()).isEqualTo(bankAccount.getId());
+        assertThat(bankTransferDto.getUserId()).isEqualTo(user.getId());
+    }
+
 }

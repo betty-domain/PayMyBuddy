@@ -38,7 +38,7 @@ public class UserDto {
     private String password;
 
 
-    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal balance;
 
     /**
      * Vérifie que les propriétés de l'entité UserDto sont valides fonctionnellement
