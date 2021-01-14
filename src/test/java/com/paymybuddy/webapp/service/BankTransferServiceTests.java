@@ -211,7 +211,8 @@ class BankTransferServiceTests {
         user.setEmail("email@gmail.com");
         user.setFirstname("firstname");
 
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());

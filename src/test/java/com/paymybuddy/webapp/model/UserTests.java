@@ -29,7 +29,8 @@ public class UserTests {
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
         user.setLastname("lastname");
 
 

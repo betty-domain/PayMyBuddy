@@ -69,7 +69,8 @@ public class UserIT {
         assertThat(user.getBankAccountList()).isEqualTo(existingUser.getBankAccountList());
         assertThat(user.getBankTransferList()).isEqualTo(existingUser.getBankTransferList());
         assertThat(user.getFriendshipList()).isEqualTo(existingUser.getFriendshipList());
-        assertThat(user.getTransactionList()).isEqualTo(existingUser.getTransactionList());
+        assertThat(user.getAllTransaction()).isEqualTo(existingUser.getAllTransaction());
+
     }
 
     @Test

@@ -57,7 +57,8 @@ public class UserDtoMapperTests {
         user.setEmail("email@gmail.com");
         user.setFirstname("firstname");
 
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
@@ -82,7 +83,8 @@ public class UserDtoMapperTests {
         assertThat(user.getBankAccountList()).isNotNull();
         assertThat(user.getBankTransferList()).isNotNull();
         assertThat(user.getFriendshipList()).isNotNull();
-        assertThat(user.getTransactionList()).isNotNull();
+        assertThat(user.getTransactionIncomingList()).isNotNull();
+        assertThat(user.getTransactionOutcomingList()).isNotNull();
     }
 
     @Test
@@ -96,7 +98,8 @@ public class UserDtoMapperTests {
         user.setEmail("email@gmail.com");
         user.setFirstname("firstname");
 
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
@@ -111,8 +114,8 @@ public class UserDtoMapperTests {
         assertThat(user.getBankAccountList()).isNotNull();
         assertThat(user.getBankTransferList()).isNotNull();
         assertThat(user.getFriendshipList()).isNotNull();
-        assertThat(user.getTransactionList()).isNotNull();
-
+        assertThat(user.getTransactionIncomingList()).isNotNull();
+        assertThat(user.getTransactionOutcomingList()).isNotNull();
 
     }
 
@@ -127,7 +130,8 @@ public class UserDtoMapperTests {
         user.setEmail("email@gmail.com");
         user.setFirstname("firstname");
 
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
@@ -144,8 +148,8 @@ public class UserDtoMapperTests {
         assertThat(user.getBankAccountList()).isNotNull();
         assertThat(user.getBankTransferList()).isNotNull();
         assertThat(user.getFriendshipList()).isNotNull();
-        assertThat(user.getTransactionList()).isNotNull();
-
+        assertThat(user.getTransactionIncomingList()).isNotNull();
+        assertThat(user.getTransactionOutcomingList()).isNotNull();
 
     }
     @Test
@@ -165,7 +169,8 @@ public class UserDtoMapperTests {
         user.setEmail("email@gmail.com");
         user.setFirstname("firstname");
 
-        user.setTransactionList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());

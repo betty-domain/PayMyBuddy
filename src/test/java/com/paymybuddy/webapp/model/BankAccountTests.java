@@ -28,6 +28,8 @@ public class BankAccountTests {
         user.setBalance(new BigDecimal(25));
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
         user.setLastname("lastname");
 

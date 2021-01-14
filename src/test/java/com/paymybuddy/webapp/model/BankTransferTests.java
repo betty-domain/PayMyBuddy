@@ -38,6 +38,8 @@ public class BankTransferTests {
         user.setBankAccountList(new ArrayList<>());
         user.setBankTransferList(new ArrayList<>());
         user.setFriendshipList(new ArrayList<>());
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
 
         BankAccount bankAccount = new BankAccount(bankAccountId,"myIban",false,"description", user);
         user.getBankAccountList().add(bankAccount);
@@ -49,6 +51,7 @@ public class BankTransferTests {
         bankTransfer.setDate(LocalDate.of(2010,5,15));
         bankTransfer.setUser(user);
         bankTransfer.setBankAccount(bankAccount);
+
 
         ObjectMapper objectMapper = new ObjectMapper();
 
