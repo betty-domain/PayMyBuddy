@@ -1,6 +1,9 @@
 package com.paymybuddy.webapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -9,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @Data
+@JsonView(DtoJsonView.Public.class)
 public class UserDto {
 
     @NotNull
@@ -30,14 +34,17 @@ public class UserDto {
     @NotNull
     @NotEmpty
     @Size(max = 20)
+    @JsonView(DtoJsonView.Private.class)
     private String password;
 
-    private BigDecimal balance;
+
+    private BigDecimal balance = BigDecimal.ZERO;
 
     /**
      * Vérifie que les propriétés de l'entité UserDto sont valides fonctionnellement
      * @return true si valide, false sinon
      */
+    @JsonView(DtoJsonView.Private.class)
     public boolean isValid() {
 
         if (this.getEmail() == null || this.getEmail().isEmpty()) {

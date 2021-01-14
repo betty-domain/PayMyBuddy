@@ -1,8 +1,7 @@
 package com.paymybuddy.webapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.paymybuddy.webapp.model.BankAccount;
-import com.paymybuddy.webapp.model.User;
 import lombok.Data;
 
 import java.util.List;
@@ -11,8 +10,10 @@ import java.util.List;
 @JsonView(DtoJsonView.Public.class)
 public class BankTransferListDto {
 
+    @JsonProperty("user")
     private UserDto userDto;
 
+    @JsonProperty("bankAccountList")
     private List<BankAccountDto> bankAccountDtoList;
 
 }

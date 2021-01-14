@@ -50,7 +50,7 @@ public class User {
     private String password;
 
     @Column(precision = 12,scale=2)
-    private BigDecimal balance = new BigDecimal(0);
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "user")
     List<Friendship> friendshipList;

@@ -2,6 +2,8 @@ package com.paymybuddy.webapp.service;
 
 import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.dto.BankTransferDtoMapper;
+import com.paymybuddy.webapp.dto.BankTransferListDto;
+import com.paymybuddy.webapp.dto.BankTransferListDtoMapper;
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.BankTransferOrder;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +32,9 @@ public class BankTransferService implements IBankTransferService {
 
     @Autowired
     private BankTransferDtoMapper bankTransferDtoMapper;
+
+    @Autowired
+    private BankTransferListDtoMapper bankTransferListDtoMapper;
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
@@ -71,8 +77,7 @@ public class BankTransferService implements IBankTransferService {
                 // on vérifie que le solde du compte est suffisant pour faire le transfert demandé
                 User actualUser = existingBankAccount.get().getUser();
                 BigDecimal newBalance = actualUser.getBalance().subtract(bankTransferDto.getAmount());
-                if (newBalance.compareTo(BigDecimal.ZERO)>0)
-                {
+                if (newBalance.compareTo(BigDecimal.ZERO) > 0) {
                     //on met à jour le solde de l'utilisateur
                     actualUser.setBalance(newBalance);
 
@@ -83,9 +88,7 @@ public class BankTransferService implements IBankTransferService {
                     logger.info("Sauvegarde du transfert d'argent et mise à jour du solde de l'utilisateur");
                     BankTransfer savedBankTransfer = bankTransferRepository.save(bankTransferToSave);
                     return savedBankTransfer;
-                }
-                else
-                {
+                } else {
                     throw new FunctionalException("Solde Insuffisant");
                 }
             } else {
@@ -93,6 +96,43 @@ public class BankTransferService implements IBankTransferService {
             }
         } else {
             throw new FunctionalException(errorKey + "Données incorrectes");
+        }
+    }
+
+    @Override
+    public BankTransferListDto getAllTransferForUser(final Integer userId) throws FunctionalException {
+
+        //TODO : à compléter pour modifier l'objet retourné : User  liste des transferts et vérifier si l'utilisateur n'existe pas avant de retourner la liste
+        String errorKey = "bankTransfer.get.error: ";
+        if (userId != null) {
+            Optional<User> existingUser = userRepository.findById(userId);
+            if (existingUser.isPresent()) {
+
+                //on récupère la liste des transferts bancaires de l'utilisateur
+                List<BankTransfer> bankTransferList = existingUser.get().getBankTransferList();
+
+                BankTransferListDto bankTransferListDto = bankTransferListDtoMapper.mapToBankTransferListDto(existingUser.get());
+
+                //pour chaque compte bancaire, on trie les transferts bancaires par date
+                existingUser.get().getBankAccountList().stream().forEach(bankAccount -> {
+                    bankAccount.getBankTransferList().stream().sorted((object1, object2) -> object2.getDate().compareTo(object1.getDate()));
+                });
+
+
+                /*bankTransferListDto.getBankAccountDtoList().stream().forEach(bankAccountDtoIterator -> {
+                    List<BankTransfer> bankTransferListForThisBankAccount = bankTransferList.stream()
+                            .filter(bankTransferIterator -> bankTransferIterator.getBankAccount().getId().equals(bankAccountDtoIterator.getId()))
+                            .sorted((object1, object2) -> object2.getDate().compareTo(object1.getDate())).collect(Collectors.toList());
+
+                    bankAccountDtoIterator.setBankTransferDtoList(bankTransferDtoMapper.mapFromBankTransferList(bankTransferListForThisBankAccount));
+                });*/
+
+                return bankTransferListDto;
+            } else {
+                throw new FunctionalException(errorKey + "Utilisateur inexistant");
+            }
+        } else {
+            throw new FunctionalException(errorKey + "Données invalides");
         }
     }
 }

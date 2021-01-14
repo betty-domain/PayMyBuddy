@@ -45,7 +45,7 @@ public class BankTransferIT {
     public void transferFromBank_ExceptionWhenSavingUser() {
 //TODO : voir commetn tester qu'il y a bien un rollback si une partie du traitemen génère une erreur : ici, voir comment simuler une erreur de l'une des requêtes d'insert ou d'update
         Integer userId = 3;
-        List<BankTransfer> existingBankTransferList = bankTransferRepository.findAllByUser_Id(userId);
+        List<BankTransfer> existingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
 
         given(userRepositorySpy.save(any())).willAnswer(invocation -> {
             throw new Exception();
@@ -60,7 +60,7 @@ public class BankTransferIT {
             bankTransferService.transferFromBank(bankTransferDto);
         });
 
-        List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_Id(userId);
+        List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
 
         assertThat(existingBankTransferList).isEqualTo(updatingBankTransferList);
 
@@ -70,7 +70,7 @@ public class BankTransferIT {
     public void transferFromBank_ValidTransaction() {
 
         Integer userId = 3;
-        List<BankTransfer> existingBankTransferList = bankTransferRepository.findAllByUser_Id(userId);
+        List<BankTransfer> existingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
         User existingUser = userRepositorySpy.findById(userId).get();
 
         BigDecimal actualAmount = existingUser.getBalance();
@@ -82,7 +82,7 @@ public class BankTransferIT {
 
         BankTransfer bankTransfer = bankTransferService.transferFromBank(bankTransferDto);
 
-        List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_Id(userId);
+        List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
         User updatingUser = userRepositorySpy.findById(userId).get();
 
         assertThat(bankTransfer.getAmount()).isEqualTo(bankTransferDto.getAmount());

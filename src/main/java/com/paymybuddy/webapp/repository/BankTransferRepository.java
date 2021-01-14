@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface BankTransferRepository extends JpaRepository<BankTransfer,Integer> {
 
-    List<BankTransfer> findAllByUser_Id(Integer userId);
+    List<BankTransfer> findAllByUser_IdOrderByDateDesc(Integer userId);
 }
