@@ -1,5 +1,6 @@
-package com.paymybuddy.webapp.service;
+package com.paymybuddy.webapp.security;
 
+import com.paymybuddy.webapp.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

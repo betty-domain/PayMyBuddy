@@ -1,25 +1,27 @@
 package com.paymybuddy.webapp.security;
 
 import com.paymybuddy.webapp.WebappApplication;
-import com.paymybuddy.webapp.model.User;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-@SpringBootTest( classes = { WebappApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { WebappApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SecurityConfigTest {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+    MockMvc mockMvc;
 
     @LocalServerPort
     private int port;
@@ -28,30 +30,32 @@ public class SecurityConfigTest {
         return "http://localhost:" + port + "/users";
     }
 
-    @Test
-    @Disabled
-    public void testAccessWithoutAuth()
-    {
-        //TODO : voir pourquoi ce test renvoit quand même un code 200 et redrection vers la page de login et non une 401 comme dans Postman
-        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(getAllUsersUrl(),String.class);
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    @Autowired
+    private WebApplicationContext context;
+
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
     }
 
     @Test
-    public void testAcessWithAutenticatedUser()
-    {
-        ResponseEntity<String> responseEntity = testRestTemplate.withBasicAuth("betty.domain@free.fr","myPassword").getForEntity(getAllUsersUrl(),String.class);
+    public void testAccessWithoutAuth() throws Exception{
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+            MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/users").
+                    contentType(MediaType.APPLICATION_JSON);
+
+            mockMvc.perform(builder).
+                    andExpect(status().isUnauthorized());
     }
 
-    @Test @Disabled
-    public void testAccessWithWrongUser()
-    {
-        //TODO : voir pourquoi ce test renvoit quand même un code 200 et redrection vers la page de login et non une 401 comme dans Postman
-        ResponseEntity<String> responseEntity = testRestTemplate.withBasicAuth("toto@gmail.fr","myPassword").getForEntity(getAllUsersUrl(),String.class);
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    @Test
+    @WithMockUser(username = "harry.potter@gmail.com", password = "potter")
+    public void testAccessWithAuthenticatedUser() throws Exception{
+
+            MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/users").
+                    contentType(MediaType.APPLICATION_JSON);
+
+            mockMvc.perform(builder).
+                    andExpect(status().isOk());
     }
-
-
 }
