@@ -5,11 +5,9 @@ import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankTransferService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -32,9 +30,6 @@ public class BankTransferControllerTests {
 
     @MockBean
     private IBankTransferService bankTransferService;
-
-    @Autowired
-    private BankTransferController bankTransferController;
 
     @Test
     public void transferFromBankStatusOK() throws Exception

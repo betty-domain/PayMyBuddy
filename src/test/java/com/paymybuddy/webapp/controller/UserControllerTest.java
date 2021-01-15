@@ -6,26 +6,16 @@ import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.service.IUserService;
 
-import com.paymybuddy.webapp.service.MyUserDetailsService;
-import com.paymybuddy.webapp.service.SecurityConfig;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.endpoint.SecurityContext;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,10 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
-//@WithMockUser(username = "harry.potter@gmail.coma",password = "potter")
-/*
-@WebMvcTest(controllers = UserController.class)
-@Disabled*/
 public class UserControllerTest {
 
     @Autowired
