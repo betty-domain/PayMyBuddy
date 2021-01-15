@@ -48,10 +48,10 @@ public class BankTransferService implements IBankTransferService {
     private UserRepository userRepository;
 
     @Override
-    public BankTransfer transferFromBank(final BankTransferDto bankTransferDto) throws FunctionalException {
+    public BankTransferDto transferFromBank(final BankTransferDto bankTransferDto) throws FunctionalException {
         String errorKey = "bankTransfer.transferFromBank.error : ";
         if (bankTransferDto != null && bankTransferDto.isValid()) {
-            logger.info("Recherche du compte bancaire associé à l'id du compte et de l'utilisateur fourni");
+            logger.info("Recherche du compte bancaire actif associé à l'id du compte et de l'utilisateur fourni");
             Optional<BankAccount> existingBankAccount = bankAccountRepository.findByIdAndIsActifTrueAndUser_id(bankTransferDto.getBankAccountId(), bankTransferDto.getUserId());
             if (existingBankAccount.isPresent()) {
                 //on ajoute le montant du transfert au compte de l'utilisateur
@@ -62,24 +62,32 @@ public class BankTransferService implements IBankTransferService {
 
                 //on enregistre le transfert et l'utilisateur sera mis à jour en même temps
                 logger.info("Sauvegarde du transfert d'argent et mise à jour du solde de l'utilisateur");
-                BankTransfer savedBankTransfer = bankTransferRepository.save(bankTransferToSave);
-                return savedBankTransfer;
+                try {
+                    BankTransfer savedBankTransfer = bankTransferRepository.save(bankTransferToSave);
+                    return bankTransferDtoMapper.mapFromBankTransfer(savedBankTransfer);
+                } catch (Exception exception) {
+                    logger.error(errorKey + "Erreur lors de l'enregistrement : " + exception.getStackTrace());
+                    throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
+                }
             } else {
+                logger.info(errorKey + "Compte inexistant pour cet utilisateur");
                 throw new FunctionalException(errorKey + "Compte inexistant pour cet utilisateur");
             }
         } else {
+            logger.info(errorKey + "Données incorrectes");
             throw new FunctionalException(errorKey + "Données incorrectes");
         }
     }
 
     @Override
-    public BankTransfer transferToBank(final BankTransferDto bankTransferDto) throws FunctionalException {
+    public BankTransferDto transferToBank(final BankTransferDto bankTransferDto) throws FunctionalException {
         String errorKey = "bankTransfer.transferToBank.error : ";
         if (bankTransferDto != null && bankTransferDto.isValid()) {
             logger.info("Recherche du compte bancaire associé à l'id du compte et de l'utilisateur fourni");
             Optional<BankAccount> existingBankAccount = bankAccountRepository.findByIdAndIsActifTrueAndUser_id(bankTransferDto.getBankAccountId(), bankTransferDto.getUserId());
             if (existingBankAccount.isPresent()) {
                 // on vérifie que le solde du compte est suffisant pour faire le transfert demandé
+                logger.info("Vérification du solde de l'utilisateur avant Transfer vers un compte bancaire");
                 User actualUser = existingBankAccount.get().getUser();
                 BigDecimal newBalance = actualUser.getBalance().subtract(bankTransferDto.getAmount());
                 if (newBalance.compareTo(BigDecimal.ZERO) > 0) {
@@ -91,15 +99,24 @@ public class BankTransferService implements IBankTransferService {
 
                     //on enregistre le transfert et l'utilisateur sera mis à jour en même temps
                     logger.info("Sauvegarde du transfert d'argent et mise à jour du solde de l'utilisateur");
-                    BankTransfer savedBankTransfer = bankTransferRepository.save(bankTransferToSave);
-                    return savedBankTransfer;
+                    try {
+                        BankTransfer savedBankTransfer = bankTransferRepository.save(bankTransferToSave);
+                        return bankTransferDtoMapper.mapFromBankTransfer(savedBankTransfer);
+                    } catch (Exception exception) {
+                        logger.error(errorKey + "Erreur lors de l'enregistrement : " + exception.getStackTrace());
+                        throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
+                    }
+
                 } else {
+                    logger.info(errorKey + "Solde utilisateur insuffisant");
                     throw new FunctionalException("Solde Insuffisant");
                 }
             } else {
+                logger.info(errorKey + "Compte inexisant pour cet utilisateur");
                 throw new FunctionalException(errorKey + "Compte inexistant pour cet utilisateur");
             }
         } else {
+            logger.info(errorKey + "Données incorrectes");
             throw new FunctionalException(errorKey + "Données incorrectes");
         }
     }
@@ -114,8 +131,8 @@ public class BankTransferService implements IBankTransferService {
                 BankTransferListDto bankTransferListDto = bankTransferListDtoMapper.mapToBankTransferListDto(existingUser.get());
 
                 //on récupère la liste des comptes bancaires pour lesquels il y a eu des transferts d'argent
-                List<BankAccount> bankAccountList =existingUser.get().getBankAccountList().stream().filter(
-                        bankAccount -> bankAccount.getBankTransferList()!=null && bankAccount.getBankTransferList().size()>0
+                List<BankAccount> bankAccountList = existingUser.get().getBankAccountList().stream().filter(
+                        bankAccount -> bankAccount.getBankTransferList() != null && bankAccount.getBankTransferList().size() > 0
                 ).collect(Collectors.toList());
 
                 //pour chaque compte bancaire, on trie les transferts bancaires par date
@@ -127,9 +144,11 @@ public class BankTransferService implements IBankTransferService {
 
                 return bankTransferListDto;
             } else {
+                logger.info(errorKey + "Utilisateur inexistant");
                 throw new FunctionalException(errorKey + "Utilisateur inexistant");
             }
         } else {
+            logger.info(errorKey + "Données invalides");
             throw new FunctionalException(errorKey + "Données invalides");
         }
     }

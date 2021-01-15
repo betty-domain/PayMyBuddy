@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.dto.BankTransferListDto;
 import com.paymybuddy.webapp.dto.DtoJsonView;
-import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankTransferService;
 import org.apache.logging.log4j.LogManager;
@@ -27,23 +26,23 @@ public class BankTransferController {
     private IBankTransferService bankTransferService;
 
     @PostMapping("/transferFromBank")
-    public BankTransfer transferFromBank(@Validated @RequestBody BankTransferDto bankTransferDto) throws FunctionalException {
+    public BankTransferDto transferFromBank(@Validated @RequestBody BankTransferDto bankTransferDto) throws FunctionalException {
         logger.info("Requête Post sur le endpoint transferFromBank reçue");
 
-        BankTransfer createdBankTransfer = bankTransferService.transferFromBank(bankTransferDto);
+        BankTransferDto createdBankTransferDto = bankTransferService.transferFromBank(bankTransferDto);
         logger.info("Réponse Post sur le endpoint transferFromBank transmise");
 
-        return createdBankTransfer;
+        return createdBankTransferDto;
     }
 
     @PostMapping("/transferToBank")
-    public BankTransfer transferToBank(@Validated @RequestBody BankTransferDto bankTransferDto) throws FunctionalException {
+    public BankTransferDto transferToBank(@Validated @RequestBody BankTransferDto bankTransferDto) throws FunctionalException {
         logger.info("Requête Post sur le endpoint transferToBank reçue");
 
-        BankTransfer createdBankTransfer = bankTransferService.transferToBank(bankTransferDto);
+        BankTransferDto createdBankTransferDto = bankTransferService.transferToBank(bankTransferDto);
         logger.info("Réponse Post sur le endpoint transferToBank transmise");
 
-        return createdBankTransfer;
+        return createdBankTransferDto;
     }
 
     @GetMapping("/transfers")

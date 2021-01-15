@@ -2,7 +2,6 @@ package com.paymybuddy.webapp.service;
 
 import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.dto.BankTransferListDto;
-import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.FunctionalException;
 
 
@@ -13,7 +12,7 @@ public interface IBankTransferService {
      * @return bankTransfer created
      * @throws FunctionalException exception if data are not valid for cash transfer
      */
-    BankTransfer transferFromBank(BankTransferDto bankTransferDto) throws FunctionalException;
+    BankTransferDto transferFromBank(BankTransferDto bankTransferDto) throws FunctionalException;
 
     /**
      * Transfer cash from PayMyBuddy to bankAccount
@@ -21,7 +20,7 @@ public interface IBankTransferService {
      * @return bankTransfer created
      * @throws FunctionalException exception if data are not valid for cash transfer
      */
-    BankTransfer transferToBank(BankTransferDto bankTransferDto) throws FunctionalException;
+    BankTransferDto transferToBank(BankTransferDto bankTransferDto) throws FunctionalException;
 
     /**
      * Get all transfer for a defined user

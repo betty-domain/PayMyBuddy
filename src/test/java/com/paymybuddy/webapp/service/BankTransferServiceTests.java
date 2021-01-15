@@ -65,7 +65,8 @@ class BankTransferServiceTests {
 
         when(bankTransferRepository.save(any())).thenReturn(bankTransfer);
 
-        BankTransfer savedBankTransfer = bankTransferService.transferFromBank(bankTransferDto);
+        BankTransferDto savedBankTransferDto = bankTransferService.transferFromBank(bankTransferDto);
+
         verify(bankTransferRepository, Mockito.times(1)).save(any());
     }
 
@@ -128,7 +129,7 @@ class BankTransferServiceTests {
 
         when(bankTransferRepository.save(any())).thenReturn(bankTransfer);
 
-        BankTransfer savedBankTransfer = bankTransferService.transferToBank(bankTransferDto);
+        BankTransferDto savedBankTransferDto = bankTransferService.transferFromBank(bankTransferDto);
         verify(bankTransferRepository, Mockito.times(1)).save(any());
     }
 

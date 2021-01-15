@@ -1,6 +1,7 @@
 package com.paymybuddy.webapp.integration;
 
 import com.paymybuddy.webapp.dto.BankTransferDto;
+import com.paymybuddy.webapp.dto.BankTransferListDto;
 import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.BankTransferOrder;
 import com.paymybuddy.webapp.model.User;
@@ -54,13 +55,13 @@ class BankTransferIT {
         bankTransferDto.setBankAccountId(existingUser.getBankAccountList().get(0).getId());
         bankTransferDto.setAmount(new BigDecimal(20));
 
-        BankTransfer bankTransfer = bankTransferService.transferToBank(bankTransferDto);
+        BankTransferDto createdBankTransfer = bankTransferService.transferToBank(bankTransferDto);
         List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
         User updatingUser = userRepositorySpy.findById(userId).get();
 
-        assertThat(bankTransfer.getAmount()).isEqualTo(bankTransferDto.getAmount());
-        assertThat(bankTransfer.getUser()).isEqualTo(existingUser);
-        assertThat(bankTransfer.getTransferOrder()).isEqualTo(BankTransferOrder.TO_BANK);
+        assertThat(createdBankTransfer.getAmount()).isEqualTo(bankTransferDto.getAmount());
+        assertThat(createdBankTransfer.getUserId()).isEqualTo(existingUser.getId());
+        assertThat(createdBankTransfer.getTransferOrder()).isEqualTo(BankTransferOrder.TO_BANK);
         assertThat(updatingBankTransferList.size()).isEqualTo(existingBankTransferList.size() + 1);
         assertThat(updatingUser.getBalance()).isEqualTo(actualAmount.subtract(bankTransferDto.getAmount()));
 
@@ -81,16 +82,25 @@ class BankTransferIT {
         bankTransferDto.setBankAccountId(existingUser.getBankAccountList().get(0).getId());
         bankTransferDto.setAmount(new BigDecimal(250));
 
-        BankTransfer bankTransfer = bankTransferService.transferFromBank(bankTransferDto);
+        BankTransferDto createdBankTransferDto = bankTransferService.transferFromBank(bankTransferDto);
 
         List<BankTransfer> updatingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
         User updatingUser = userRepositorySpy.findById(userId).get();
 
-        assertThat(bankTransfer.getAmount()).isEqualTo(bankTransferDto.getAmount());
-        assertThat(bankTransfer.getUser()).isEqualTo(existingUser);
-        assertThat(bankTransfer.getTransferOrder()).isEqualTo(BankTransferOrder.FROM_BANK);
+        assertThat(createdBankTransferDto.getAmount()).isEqualTo(bankTransferDto.getAmount());
+        assertThat(createdBankTransferDto.getUserId()).isEqualTo(existingUser.getId());
+        assertThat(createdBankTransferDto.getTransferOrder()).isEqualTo(BankTransferOrder.FROM_BANK);
         assertThat(updatingBankTransferList.size()).isEqualTo(existingBankTransferList.size() + 1);
         assertThat(updatingUser.getBalance()).isEqualTo(actualAmount.add(bankTransferDto.getAmount()));
 
+    }
+
+    @Test
+    void getBankTransferListForUser()
+    {
+        Integer userId = 2;
+        BankTransferListDto bankTransferListDto = bankTransferService.getAllTransferForUser(userId);
+        assertThat(bankTransferListDto).isNotNull();
+        assertThat(bankTransferListDto.getBankAccountDtoList().size()).isEqualTo(2);
     }
 }

@@ -2,7 +2,6 @@ package com.paymybuddy.webapp.controller;
 
 import com.paymybuddy.webapp.TestsUtils;
 import com.paymybuddy.webapp.dto.BankTransferDto;
-import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankTransferService;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -39,7 +37,7 @@ public class BankTransferControllerTests {
         bankTransferDto.setUserId(5);
         bankTransferDto.setAmount(new BigDecimal(250.45));
 
-        when(bankTransferService.transferFromBank(bankTransferDto)).thenReturn(new BankTransfer());
+        when(bankTransferService.transferFromBank(bankTransferDto)).thenReturn(new BankTransferDto());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/transferFromBank").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(bankTransferDto));
@@ -73,7 +71,7 @@ public class BankTransferControllerTests {
         bankTransferDto.setUserId(5);
         bankTransferDto.setAmount(new BigDecimal(250.45));
 
-        when(bankTransferService.transferToBank(bankTransferDto)).thenReturn(new BankTransfer());
+        when(bankTransferService.transferToBank(bankTransferDto)).thenReturn(new BankTransferDto());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/transferToBank").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(bankTransferDto));
