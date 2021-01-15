@@ -2,7 +2,6 @@ package com.paymybuddy.webapp.controller;
 
 import com.paymybuddy.webapp.TestsUtils;
 import com.paymybuddy.webapp.dto.BankAccountDto;
-import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankAccountService;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -39,7 +37,7 @@ public class BankAccountControllerTests {
         bankAccountDto.setIban("iban");
         bankAccountDto.setUserId(25);
 
-        when(bankAccountService.addBankAccount(bankAccountDto)).thenReturn(new BankAccount());
+        when(bankAccountService.addBankAccount(bankAccountDto)).thenReturn(new BankAccountDto());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bankAccount").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(bankAccountDto));
@@ -88,5 +86,7 @@ public class BankAccountControllerTests {
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest());
     }
+
+
 
 }

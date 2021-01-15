@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -32,7 +31,8 @@ public class BankAccountService implements IBankAccountService {
     private BankAccountDtoMapper bankAccountDtoMapper;
 
     @Override
-    public BankAccount addBankAccount(final BankAccountDto bankAccountDto) throws FunctionalException {
+    public BankAccountDto addBankAccount(final BankAccountDto bankAccountDto) throws FunctionalException {
+        //TODO à modifier pour qu'on fasse un update si le compte existait déjà mais qu'il était inactif
         String errorKey = "bankAccount.add.error :";
 
         if (bankAccountDto != null && bankAccountDto.isValid()) {
@@ -41,11 +41,19 @@ public class BankAccountService implements IBankAccountService {
             if (existingUser.isPresent()) {
                 logger.info("Vérification que l'iban n'existe pas déjà pour l'utilisateur");
                 Optional<BankAccount> existingBankAccount = bankAccountRepository.findByIbanAndUser_Id(bankAccountDto.getIban(), bankAccountDto.getUserId());
-                if (existingBankAccount.isPresent()) {
+                if (existingBankAccount.isPresent() && existingBankAccount.get().isActif()) {
                     throw new FunctionalException(errorKey + "Iban déjà existant pour cet utilisateur");
                 } else {
-                    BankAccount bankAccountToSave = bankAccountDtoMapper.mapToBankAccount(bankAccountDto, existingUser.get());
-                    return bankAccountRepository.save(bankAccountToSave);
+                    BankAccount savedBankAccount = null;
+                    if (existingBankAccount.isPresent() && !existingBankAccount.get().isActif()) {//si le compte avait été désactivé, on va le réactiver
+                        savedBankAccount = existingBankAccount.get();
+                        savedBankAccount.setActif(true);
+                        bankAccountDtoMapper.updateBankAccountFromBankAccountDto(bankAccountDto,savedBankAccount);
+                        bankAccountRepository.save(savedBankAccount);
+                    } else {
+                        savedBankAccount = bankAccountRepository.save(bankAccountDtoMapper.mapToBankAccount(bankAccountDto, existingUser.get()));
+                    }
+                    return bankAccountDtoMapper.mapFromBankAccount(savedBankAccount);
                 }
             } else {
                 throw new FunctionalException(errorKey + "Utilisateur inconnu");
@@ -57,15 +65,19 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public boolean deleteBankAccount(final Integer bankAccountId) throws FunctionalException {
-        //TODO : à revoir pour désactiver le compte et non pas le supprimer si fontionnement attendu (à confirmer avec Alexandre)
-        String errorKey = "bankAccount.delete.error";
+        String errorKey = "bankAccount.delete.error :";
         if (bankAccountId == null) {
-            throw new FunctionalException(errorKey+"Données incorrectes");
-        }
-        else
-        {
-            bankAccountRepository.deleteById(bankAccountId);
-            return true;
+            throw new FunctionalException(errorKey + "Données incorrectes");
+        } else {
+            Optional<BankAccount> existingBankAccount = bankAccountRepository.findById(bankAccountId);
+            if (existingBankAccount.isPresent()) {
+                existingBankAccount.get().setActif(false);
+                BankAccount updatingBankAccount = bankAccountRepository.save(existingBankAccount.get());
+                return true;
+            } else {
+                throw new FunctionalException(errorKey + "Compte bancaire inexistant");
+            }
+
         }
     }
 }

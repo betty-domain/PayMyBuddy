@@ -93,11 +93,12 @@ public class BankAccountServiceTests {
     }
 
     @Test
-    void addValidBankAccount() {
+    void addValidBankAccount_NewBankAccount() {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setUserId(25);
         bankAccountDto.setDescription("description");
         bankAccountDto.setIban("FR12 3456 7654 21");
+        bankAccountDto.setId(null);
 
         BankAccount createdBankAccount = new BankAccount();
         createdBankAccount.setActif(true);
@@ -110,8 +111,35 @@ public class BankAccountServiceTests {
         when(bankAccountRepositoryMock.findByIbanAndUser_Id(bankAccountDto.getIban(), bankAccountDto.getUserId())).thenReturn(Optional.empty());
         when(bankAccountRepositoryMock.save(bankAccountDtoMapper.mapToBankAccount(bankAccountDto, new User()))).thenReturn(createdBankAccount);
 
+        assertThat(bankAccountService.addBankAccount(bankAccountDto).getId()).isNotNull();
+        verify(bankAccountRepositoryMock,Mockito.times(1)).save(any());
 
-        assertThat(bankAccountService.addBankAccount(bankAccountDto)).isEqualTo(createdBankAccount);
+    }
+
+    @Test
+    void addValidBankAccount_DesactivatedBankAccount() {
+        BankAccountDto bankAccountDto = new BankAccountDto();
+        bankAccountDto.setUserId(25);
+        bankAccountDto.setDescription("description");
+        bankAccountDto.setIban("FR12 3456 7654 21");
+        bankAccountDto.setId(null);
+
+        BankAccount createdBankAccount = new BankAccount();
+        createdBankAccount.setActif(false);
+        createdBankAccount.setDescription("old description");
+        createdBankAccount.setIban(bankAccountDto.getIban());
+        createdBankAccount.setId(43);
+        User user=new User();
+        user.setId(42);
+        createdBankAccount.setUser(user);
+
+        when(userRepositoryMock.findById(bankAccountDto.getUserId())).thenReturn(Optional.of(new User()));
+        when(bankAccountRepositoryMock.findByIbanAndUser_Id(bankAccountDto.getIban(), bankAccountDto.getUserId())).thenReturn(Optional.of(createdBankAccount));
+
+        BankAccountDto createdBankAccountDto =bankAccountService.addBankAccount(bankAccountDto);
+
+        assertThat(createdBankAccountDto.isValid()).isTrue();
+        assertThat(createdBankAccountDto.getId()).isEqualTo(createdBankAccount.getId());
         verify(bankAccountRepositoryMock,Mockito.times(1)).save(any());
 
     }
@@ -127,10 +155,25 @@ public class BankAccountServiceTests {
     }
 
     @Test
+    void deleteBankAccount_UnexistingBankAccount()
+    {
+        int idBankAccount = 15;
+        when(bankAccountRepositoryMock.findById(any())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+            bankAccountService.deleteBankAccount(idBankAccount);
+        });
+
+        assertThat(exception.getMessage()).contains("Compte bancaire inexistant");
+    }
+
+    @Test
     void deleteBankAccountValid()
     {
         int idBankAccount = 15;
-        bankAccountService.deleteBankAccount(idBankAccount);
-        verify(bankAccountRepositoryMock, Mockito.times(1)).deleteById(idBankAccount);
+
+        when(bankAccountRepositoryMock.findById(any())).thenReturn(Optional.of(new BankAccount()));
+        assertThat(bankAccountService.deleteBankAccount(idBankAccount)).isTrue();
+        verify(bankAccountRepositoryMock, Mockito.times(1)).save(any());
     }
 }

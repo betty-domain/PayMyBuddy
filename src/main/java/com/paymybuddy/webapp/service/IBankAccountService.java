@@ -1,7 +1,6 @@
 package com.paymybuddy.webapp.service;
 
 import com.paymybuddy.webapp.dto.BankAccountDto;
-import com.paymybuddy.webapp.model.BankAccount;
 
 public interface IBankAccountService {
     /**
@@ -9,7 +8,7 @@ public interface IBankAccountService {
      * @param bankAccountDto
      * @return compte bancaire créé
      */
-    BankAccount addBankAccount(BankAccountDto bankAccountDto);
+    BankAccountDto addBankAccount(BankAccountDto bankAccountDto);
 
     /**
      * suppression d'un compte bancaire

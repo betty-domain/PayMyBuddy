@@ -120,4 +120,62 @@ class BankAccountDtoMapperTests {
         assertThat(bankAccountDtoList.get(1).getBankTransferDtoList().size()).isEqualTo(1);
 
     }
+
+    @Test
+    void updateBankAccountWithDto_NullValues()
+    {
+        BankAccount bankAccount = new BankAccount(5, "iban", false, "description", new User());
+        bankAccount.setBankTransferList(new ArrayList<>());
+
+        bankAccountDtoMapper.updateBankAccountFromBankAccountDto(null,bankAccount);
+        assertThat(bankAccount.isActif()).isFalse();
+        assertThat(bankAccount.getId()).isEqualTo(5);
+        assertThat(bankAccount.getIban()).isEqualTo("iban");
+        assertThat(bankAccount.getDescription()).isEqualTo("description");
+        assertThat(bankAccount.getBankTransferList()).isNotNull();
+        assertThat(bankAccount.getUser()).isNotNull();
+    }
+
+    @Test
+    void updateBankAccountWithDto_NullProperties()
+    {
+        BankAccount bankAccount = new BankAccount(5, "iban", false, "description", new User());
+        bankAccount.setBankTransferList(new ArrayList<>());
+
+        BankAccountDto  bankAccountDto = new BankAccountDto();
+
+        bankAccountDtoMapper.updateBankAccountFromBankAccountDto(bankAccountDto,bankAccount);
+        assertThat(bankAccount.isActif()).isFalse();
+        assertThat(bankAccount.getId()).isEqualTo(5);
+        assertThat(bankAccount.getIban()).isEqualTo("iban");
+        assertThat(bankAccount.getDescription()).isEqualTo("description");
+        assertThat(bankAccount.getBankTransferList()).isNotNull();
+        assertThat(bankAccount.getUser()).isNotNull();
+    }
+
+    @Test
+    void updateBankAccountWithDto_ValidMapping()
+    {
+        User user = new User();
+        user.setId(1);
+        BankAccount bankAccount = new BankAccount(5, "iban", false, "description", user);
+        bankAccount.setBankTransferList(new ArrayList<>());
+
+        BankAccountDto  bankAccountDto = new BankAccountDto();
+        List<BankTransferDto> bankTransferDtoList = new ArrayList<>();
+        bankTransferDtoList.add(new BankTransferDto());
+        bankAccountDto.setBankTransferDtoList(bankTransferDtoList);
+        bankAccountDto.setIban("iban modified");
+        bankAccountDto.setDescription("description modified");
+        bankAccountDto.setId(25);
+        bankAccountDto.setUserId(43);
+
+        bankAccountDtoMapper.updateBankAccountFromBankAccountDto(bankAccountDto,bankAccount);
+        assertThat(bankAccount.isActif()).isEqualTo(false);
+        assertThat(bankAccount.getId()).isEqualTo(bankAccountDto.getId());
+        assertThat(bankAccount.getIban()).isEqualTo(bankAccountDto.getIban());
+        assertThat(bankAccount.getDescription()).isEqualTo(bankAccountDto.getDescription());
+        assertThat(bankAccount.getBankTransferList().size()).isEqualTo(0);
+        assertThat(bankAccount.getUser().getId()).isEqualTo(1);
+    }
 }

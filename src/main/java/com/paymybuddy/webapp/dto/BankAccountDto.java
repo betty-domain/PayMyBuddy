@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
+@JsonView(DtoJsonView.Public.class)
 public class BankAccountDto {
 
     @JsonView(DtoJsonView.Private.class)
@@ -18,13 +19,11 @@ public class BankAccountDto {
     @NotNull
     @NotEmpty
     @Size(max = 34)
-    @JsonView(DtoJsonView.Public.class)
     private String iban;
 
     @NotNull
     @NotEmpty
     @Size(max = 50)
-    @JsonView(DtoJsonView.Public.class)
     private String description;
 
     @NotNull
@@ -32,7 +31,6 @@ public class BankAccountDto {
     private Integer userId;
 
     @JsonProperty("bankTransferList")
-    @JsonView(DtoJsonView.Public.class)
     private List<BankTransferDto> bankTransferDtoList;
 
 
@@ -40,6 +38,7 @@ public class BankAccountDto {
      * Vérifie si l'objet est valide
      * @return true si valide, false sinon
      */
+    @JsonView(DtoJsonView.Private.class)
     public boolean isValid()
     {
         if (iban ==null || iban.isEmpty())

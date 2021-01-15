@@ -1,7 +1,8 @@
 package com.paymybuddy.webapp.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.paymybuddy.webapp.dto.BankAccountDto;
-import com.paymybuddy.webapp.model.BankAccount;
+import com.paymybuddy.webapp.dto.DtoJsonView;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankAccountService;
 import org.apache.logging.log4j.LogManager;
@@ -22,16 +23,18 @@ public class BankAccountController {
     private IBankAccountService bankAccountService;
 
     @PostMapping("/bankAccount")
-    public BankAccount addBankAccount(@Validated @RequestBody BankAccountDto bankAccountDto) throws FunctionalException {
+    @JsonView(DtoJsonView.Public.class)
+    public BankAccountDto addBankAccount(@Validated @RequestBody BankAccountDto bankAccountDto) throws FunctionalException {
         logger.info("Requête Post sur le endpoint bankAccount reçue");
 
-        BankAccount createdBankAccount = bankAccountService.addBankAccount(bankAccountDto);
+        BankAccountDto createdBankAccountDto = bankAccountService.addBankAccount(bankAccountDto);
         logger.info("Réponse Post sur le endpoint bankAccount transmise");
 
-        return createdBankAccount;
+        return createdBankAccountDto;
     }
 
     @DeleteMapping("/bankAccount")
+    @JsonView(DtoJsonView.Public.class)
     public String deleteBankAccount(@Validated @RequestParam Integer bankAccountId) throws FunctionalException {
         logger.info("Requête Delete sur le endpoint bankAccount reçue");
 
