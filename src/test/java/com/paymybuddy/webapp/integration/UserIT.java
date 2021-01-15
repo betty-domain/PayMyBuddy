@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:insert_TestData.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:removeData.sql")
 })
-public class UserIT {
+class UserIT {
 
     @Autowired
     private UserService userService;
@@ -34,7 +34,7 @@ public class UserIT {
     EncryptUtils encryptUtils;
 
     @Test
-    public void addUserTest()
+    void addUserTest()
     {
         UserDto userDtoTest = new UserDto();
         userDtoTest.setFirstname("firstname");
@@ -42,13 +42,13 @@ public class UserIT {
         userDtoTest.setPassword("password");
         userDtoTest.setEmail("email@gmail.com");
 
-        User user = userService.addUser(userDtoTest);
+        UserDto userDtoCreated = userService.addUser(userDtoTest);
 
-        assertThat(user.getId()).isNotNull();
+        assertThat(userDtoCreated).isNotNull();
     }
 
     @Test
-    public void updateUserTest()
+    void updateUserTest()
     {
         User existingUser = userRepository.findUserByEmailIgnoreCase("updateUser@free.fr").get();
         String password = existingUser.getPassword();
@@ -58,26 +58,21 @@ public class UserIT {
         userDtoTest.setLastname("lastname modified");
         userDtoTest.setPassword("password modified");
         userDtoTest.setEmail("updateUser@free.fr");
+        userDtoTest.setBalance(null);
 
-        User user = userService.updateUser(userDtoTest);
+        UserDto userDto = userService.updateUser(userDtoTest);
 
-        assertThat(user.getId()).isEqualTo(existingUser.getId());
-        assertThat(user.getLastname()).isEqualTo(userDtoTest.getLastname());
-        assertThat(user.getFirstname()).isEqualTo(userDtoTest.getFirstname());
-        assertThat(user.getPassword()).isNotEqualTo(password);
-        assertThat(user.getBalance()).isEqualTo(existingUser.getBalance());
-        assertThat(user.getBankAccountList()).isEqualTo(existingUser.getBankAccountList());
-        assertThat(user.getBankTransferList()).isEqualTo(existingUser.getBankTransferList());
-        assertThat(user.getFriendshipList()).isEqualTo(existingUser.getFriendshipList());
-        assertThat(user.getAllTransaction()).isEqualTo(existingUser.getAllTransaction());
-
+        assertThat(userDto.getLastname()).isEqualTo(userDtoTest.getLastname());
+        assertThat(userDto.getFirstname()).isEqualTo(userDtoTest.getFirstname());
+        assertThat(userDto.getPassword()).isNotEqualTo(password);
+        assertThat(userDto.getBalance()).isEqualTo(existingUser.getBalance());
     }
 
     @Test
-    public void getAllUsersTest()
+    void getAllUsersTest()
     {
-        List<User> userList= userService.getAllUsers();
-        assertThat(userList.stream().filter(user -> user.getEmail().equalsIgnoreCase("updateUser@free.fr")).findFirst()).isPresent();
+        List<UserDto> userList= userService.getAllUsers();
+        assertThat(userList.stream().filter(userDto -> userDto.getEmail().equalsIgnoreCase("updateUser@free.fr")).findFirst()).isPresent();
         assertThat(userList.size()).isGreaterThanOrEqualTo(4);
     }
 }

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
-public class UserControllerTest {
+class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -39,16 +39,14 @@ public class UserControllerTest {
     IUserService userServiceMock;
 
     @Test
-    public void addUserValidTest() throws Exception {
+    void addUserValidTest() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setLastname("myLastName");
         userDto.setFirstname("myFirstName");
         userDto.setPassword("myPassword");
         userDto.setEmail("myEmail@gmail.com");
 
-        User user = new User();
-
-        when(userServiceMock.addUser(userDto)).thenReturn(user);
+        when(userServiceMock.addUser(userDto)).thenReturn(userDto);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/user").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(userDto));
@@ -58,7 +56,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void addUserWithException() throws Exception {
+    void addUserWithException() throws Exception {
 
         UserDto userDto = new UserDto();
         userDto.setLastname("myLastName");
@@ -80,15 +78,14 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUserValidTest() throws Exception {
+    void updateUserValidTest() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setLastname("myLastName");
         userDto.setFirstname("myFirstName");
         userDto.setPassword("myPassword");
         userDto.setEmail("myEmail@gmail.com");
-        User user = new User();
 
-        when(userServiceMock.updateUser(userDto)).thenReturn(user);
+        when(userServiceMock.updateUser(userDto)).thenReturn(userDto);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/user").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(userDto));
@@ -98,7 +95,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUserWithException() throws Exception {
+    void updateUserWithException() throws Exception {
 
         UserDto userDto = new UserDto();
         userDto.setLastname("myLastName");
@@ -120,7 +117,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getAllUsersValidTest() throws Exception {
+    void getAllUsersValidTest() throws Exception {
         User user = new User();
         user.setLastname("myLastName");
         user.setFirstname("myFirstName");
@@ -131,7 +128,7 @@ public class UserControllerTest {
         List<User> userList = new ArrayList<>();
         userList.add(user);
 
-        when(userServiceMock.getAllUsers()).thenReturn(userList);
+        when(userServiceMock.getAllUsers()).thenReturn(new ArrayList<>());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/users").
                 contentType(MediaType.APPLICATION_JSON);
@@ -142,7 +139,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getAllUsersWithException() throws Exception {
+    void getAllUsersWithException() throws Exception {
 
         User user = new User();
         user.setLastname("myLastName");

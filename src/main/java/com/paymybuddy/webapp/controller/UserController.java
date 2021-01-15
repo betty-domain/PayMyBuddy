@@ -1,8 +1,9 @@
 package com.paymybuddy.webapp.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.webapp.dto.DtoJsonView;
 import com.paymybuddy.webapp.dto.UserDto;
 import com.paymybuddy.webapp.model.FunctionalException;
-import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.service.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,11 +25,12 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/user")
-    public User addUser(@Validated @RequestBody UserDto userDto) throws FunctionalException
+    @JsonView(DtoJsonView.Public.class)
+    public UserDto addUser(@Validated @RequestBody UserDto userDto) throws FunctionalException
     {
         logger.info("Requête Post sur le endpoint user reçue");
 
-        User createdUser = userService.addUser(userDto);
+        UserDto createdUser = userService.addUser(userDto);
         if (createdUser != null) {
             logger.info("Réponse Post sur le endpoint user transmise");
             return createdUser;
@@ -40,11 +42,12 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public User updateUser(@Validated @RequestBody UserDto userDto)
+    @JsonView(DtoJsonView.Public.class)
+    public UserDto updateUser(@Validated @RequestBody UserDto userDto)
     {
         logger.info("Requête Put sur le endpoint user reçue");
 
-        User updatedUser = userService.updateUser(userDto);
+        UserDto updatedUser = userService.updateUser(userDto);
         if (updatedUser !=null)
         {
             logger.info("Réponse Put sur le endpoint user transmise");
@@ -58,11 +61,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers()
+    @JsonView(DtoJsonView.Public.class)
+    public List<UserDto> getAllUsers()
     {
         logger.info("Requête Get sur le endpoint users reçue");
 
-        List<User> userList = userService.getAllUsers();
+        List<UserDto> userList = userService.getAllUsers();
         if (userList !=null)
         {
             logger.info("Réponse Get sur le endpoint users transmise");

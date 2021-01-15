@@ -32,7 +32,7 @@ public class UserService implements IUserService {
      * @return Objet Utilisateur créé
      */
     @Override
-    public User addUser(final UserDto userDto) throws FunctionalException {
+    public UserDto addUser(final UserDto userDto) throws FunctionalException {
 
         String errorKey = "add.user.error : ";
         if (userDto!=null && userDto.getEmail()!=null)
@@ -48,9 +48,16 @@ public class UserService implements IUserService {
             else
             {
                 if (userDto.isValid()) {
-                    User createdUser = userRepository.save(userDtoMapper.mapToUser(userDto));
-                    logger.info("Ajout de l'utilisateur réussi");
-                    return createdUser;
+                    try {
+                        User createdUser = userRepository.save(userDtoMapper.mapToUser(userDto));
+                        logger.info("Ajout de l'utilisateur réussi");
+                        return userDtoMapper.mapFromUser(createdUser);
+                    }
+                    catch (Exception exception)
+                    {
+                        logger.error("Erreur lors de l'enregistrement d'un utilisateur : " + exception.getStackTrace());
+                        throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
+                    }
                 }
                 else
                 {
@@ -63,7 +70,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(final UserDto userDto) {
+    public UserDto updateUser(final UserDto userDto) {
         String errorKey = "update.user.error : ";
         if (userDto!=null && userDto.getEmail()!=null)
         {
@@ -79,9 +86,16 @@ public class UserService implements IUserService {
             {
                 if (userDto.isValid()) {
                     userDtoMapper.updateUserFromUserDto(userDto,existingUser.get());
-                    User updatedUser = userRepository.save(existingUser.get());
-                    logger.info("Mise à jour de l'utilisateur réussie");
-                    return updatedUser;
+                    try {
+                        User updatedUser = userRepository.save(existingUser.get());
+                        logger.info("Mise à jour de l'utilisateur réussie");
+                        return userDtoMapper.mapFromUser(updatedUser);
+                    }
+                    catch (Exception exception)
+                    {
+                        logger.error("Erreur lors de l'enregistrement de l'utilisateur : " + exception.getStackTrace());
+                        throw new FunctionalException("Erreur lors de l'enregistrement");
+                    }
                 }
                 else
                 {
@@ -94,10 +108,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() throws FunctionalException{
         logger.info("Recherche de l'ensemble des utilisateurs");
 
-        return userRepository.findAll();
+        try
+        {
+            List<User> userList =userRepository.findAll();
+            return userDtoMapper.mapFromUserList(userList);
+        }
+        catch (Exception exception)
+        {
+            logger.error("Erreur lors de la récupération des utilisateurs : " + exception.getStackTrace());
+            throw new FunctionalException("Erreur lors de la récupération des utilisateurs");
+        }
     }
 
 }

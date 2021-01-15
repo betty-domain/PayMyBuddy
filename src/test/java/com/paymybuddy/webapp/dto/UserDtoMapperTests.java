@@ -9,12 +9,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class UserDtoMapperTests {
+class UserDtoMapperTests {
 
     @Autowired
     private UserDtoMapper userDtoMapper;
@@ -23,12 +24,12 @@ public class UserDtoMapperTests {
     private EncryptUtils encryptUtils;
 
     @Test
-    public void mapToUser_WithNullDto() {
+    void mapToUser_WithNullDto() {
         assertThat(userDtoMapper.mapToUser(null)).isNull();
     }
 
     @Test
-    public void mapToUser_WithDtoNotNull() {
+    void mapToUser_WithDtoNotNull() {
         UserDto userDto = new UserDto();
         userDto.setPassword("password");
         userDto.setLastname("lastname");
@@ -47,7 +48,7 @@ public class UserDtoMapperTests {
     }
 
     @Test
-    public void updateUserFromUserDto_ValidMapping() {
+    void updateUserFromUserDto_ValidMapping() {
 
         User user = new User();
         user.setBalance(new BigDecimal(250));
@@ -88,7 +89,7 @@ public class UserDtoMapperTests {
     }
 
     @Test
-    public void updateUserFromUserDto_NullDto() {
+    void updateUserFromUserDto_NullDto() {
 
         User user = new User();
         user.setBalance(new BigDecimal(250));
@@ -120,7 +121,7 @@ public class UserDtoMapperTests {
     }
 
     @Test
-    public void updateUserFromUserDto_NullDtoProperties() {
+    void updateUserFromUserDto_NullDtoProperties() {
 
         User user = new User();
         user.setBalance(new BigDecimal(250));
@@ -153,13 +154,13 @@ public class UserDtoMapperTests {
 
     }
     @Test
-    public void mapFromUser_NullUser()
+    void mapFromUser_NullUser()
     {
         assertThat(userDtoMapper.mapFromUser(null)).isNull();
     }
 
     @Test
-    public void mapFromUser_ValidMapping()
+    void mapFromUser_ValidMapping()
     {
         User user = new User();
         user.setBalance(new BigDecimal(250));
@@ -181,5 +182,36 @@ public class UserDtoMapperTests {
         assertThat(userDto.getFirstname()).isEqualTo(user.getFirstname());
         assertThat(userDto.getLastname()).isEqualTo(user.getLastname());
         assertThat(userDto.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @Test
+    void mapFromUserList_WithNullObject()
+    {
+        assertThat(userDtoMapper.mapFromUserList(null)).isNull();
+    }
+
+    @Test
+    void mapFromUserList_ValidMapping()
+    {
+        User user = new User();
+        user.setBalance(new BigDecimal(250));
+        user.setLastname("lastname");
+        user.setId(40);
+        user.setPassword("myPassword");
+        user.setEmail("email@gmail.com");
+        user.setFirstname("firstname");
+
+        user.setTransactionIncomingList(new ArrayList<>());
+        user.setTransactionOutcomingList(new ArrayList<>());
+        user.setFriendshipList(new ArrayList<>());
+        user.setBankAccountList(new ArrayList<>());
+        user.setBankTransferList(new ArrayList<>());
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
+
+        List<UserDto> userDtoList = userDtoMapper.mapFromUserList(userList);
+
+        assertThat(userDtoList.size()).isEqualTo(1);
     }
 }

@@ -10,7 +10,7 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 
@@ -37,5 +37,7 @@ public abstract class UserDtoMapper {
     }
 
     public abstract UserDto mapFromUser(User user);
+
+    public abstract List<UserDto> mapFromUserList(List<User> user);
 
 }

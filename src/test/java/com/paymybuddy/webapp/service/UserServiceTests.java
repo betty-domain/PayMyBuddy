@@ -4,17 +4,12 @@ import com.paymybuddy.webapp.dto.UserDto;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.repository.UserRepository;
-import org.assertj.core.api.BigDecimalAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import javax.jws.soap.SOAPBinding;
-import javax.swing.text.html.Option;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,15 +17,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class UserServiceTests {
+class UserServiceTests {
 
     @MockBean
     private UserRepository userRepositoryMock;
@@ -51,7 +46,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addUserWithNullDto() {
+    void addUserWithNullDto() {
         Exception exception = assertThrows(FunctionalException.class, () -> {
                     userService.addUser(null);
                 }
@@ -61,7 +56,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addUserWithEmailNull() {
+    void addUserWithEmailNull() {
         UserDto userDto = new UserDto();
         userDto.setEmail(null);
 
@@ -74,7 +69,24 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addExistingUser() {
+    void addUserWithDBException() {
+
+        when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.empty());
+
+        given(userRepositoryMock.save(any())).willAnswer(invocation -> {
+            throw new Exception();
+        });
+
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+                    userService.addUser(userDtoTest);
+                }
+        );
+
+        assertThat(exception.getMessage()).contains("Erreur lors de l'enregistrement");
+    }
+
+    @Test
+    void addExistingUser() {
         Optional<User> optionalUser = Optional.of(new User());
         when(userRepositoryMock.findUserByEmailIgnoreCase(anyString())).thenReturn(optionalUser);
         Exception exception = assertThrows(FunctionalException.class, () -> {
@@ -86,7 +98,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addNonValidUser() {
+    void addNonValidUser() {
         when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.empty());
         userDtoTest.setLastname("");
 
@@ -99,19 +111,20 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addUserOk()
+    void addUserOk()
     {
         when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.empty());
         when(userRepositoryMock.save(any(User.class))).thenReturn(new User());
 
-        User createdUser = userService.addUser(userDtoTest);
+        UserDto createdUser = userService.addUser(userDtoTest);
 
         assertThat(createdUser).isNotNull();
+        assertThat(createdUser.getBalance()).isEqualTo(BigDecimal.ZERO);
         verify(userRepositoryMock, Mockito.times(1)).save(any());
     }
 
     @Test
-    public void updateUserWithNullDto()
+    void updateUserWithNullDto()
     {
         Exception exception = assertThrows(FunctionalException.class, () -> {
                     userService.updateUser(null);
@@ -122,7 +135,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void updateUserWithEmailNull() {
+    void updateUserWithEmailNull() {
         UserDto userDto = new UserDto();
         userDto.setEmail(null);
 
@@ -135,7 +148,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void updateNonExistingUser() {
+    void updateNonExistingUser() {
         when(userRepositoryMock.findUserByEmailIgnoreCase(anyString())).thenReturn(Optional.empty());
         Exception exception = assertThrows(FunctionalException.class, () -> {
                     userService.updateUser(userDtoTest);
@@ -146,7 +159,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void updateNonValidUser() {
+    void updateNonValidUser() {
         User userToUpdate = new User();
 
         when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.of(userToUpdate));
@@ -161,28 +174,67 @@ public class UserServiceTests {
     }
 
     @Test
-    public void updateUserOk()
+    void updateUserWithDBException() {
+        User userToUpdate = new User();
+
+        when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.of(userToUpdate));
+
+        given(userRepositoryMock.save(any())).willAnswer(invocation -> {
+            throw new Exception();
+        });
+
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+                    userService.updateUser(userDtoTest );
+                }
+        );
+
+        assertThat(exception.getMessage()).contains("Erreur lors de l'enregistrement");
+    }
+
+    @Test
+    void updateUserOk()
     {
         User userToUpdate = new User();
 
         when(userRepositoryMock.findUserByEmailIgnoreCase(userDtoTest.getEmail())).thenReturn(Optional.of(userToUpdate));
         when(userRepositoryMock.save(any(User.class))).thenReturn(new User());
 
-        User updateUser = userService.updateUser(userDtoTest);
+        UserDto updateUser = userService.updateUser(userDtoTest);
 
         assertThat(updateUser).isNotNull();
         verify(userRepositoryMock, Mockito.times(1)).save(any());
     }
 
     @Test
-    public void getAllUsersTest()
+    void getAllUsersTest()
     {
         List<User> userList = new ArrayList<>();
         User user = new User();
         user.setId(15);
+        user.setEmail("myEmail@free.fr");
         userList.add(user);
         when(userRepositoryMock.findAll()).thenReturn(userList);
 
-        assertThat(userService.getAllUsers()).contains(user);
+        assertThat(userService.getAllUsers().stream().filter(userDto -> userDto.getEmail().equalsIgnoreCase(user.getEmail())).findFirst()).isPresent();
+    }
+
+    @Test
+    void getAllUsersTestWithDbException()
+    {
+        List<User> userList = new ArrayList<>();
+        User user = new User();
+        user.setId(15);
+        user.setEmail("myEmail@free.fr");
+        userList.add(user);
+
+        given(userRepositoryMock.findAll()).willAnswer(invocation -> {
+            throw new Exception();
+        });
+
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+                    userService.getAllUsers();
+                }
+        );
+
     }
 }
