@@ -31,6 +31,7 @@ public class BankAccountDto {
     private Integer userId;
 
     @JsonProperty("bankTransferList")
+    @JsonView(DtoJsonView.Protected.class)
     private List<BankTransferDto> bankTransferDtoList;
 
 

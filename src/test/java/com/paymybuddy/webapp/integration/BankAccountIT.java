@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:insert_TestData.sql")
 })
-public class BankAccountIT {
+class BankAccountIT {
     @Autowired
     private BankAccountService bankAccountService;
 
@@ -31,7 +32,7 @@ public class BankAccountIT {
     UserRepository userRepository;
 
     @Test
-    public void addBankAccountTest()
+    void addBankAccountTest()
     {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setIban("DE 345 678 907");
@@ -46,11 +47,20 @@ public class BankAccountIT {
     }
 
     @Test
-    public void deleteBankAccount()
+    void deleteBankAccount()
     {
-        assertThat(bankAccountService.deleteBankAccount(1)).isTrue();
+        assertThat(bankAccountService.desactivateBankAccount(1)).isTrue();
         BankAccount bankAccount = bankAccountRepository.findById(1).get();
         assertThat(bankAccount.isActif()).isFalse();
-
     }
+
+    @Test
+    void getBankAccountListForUser()
+    {
+        List<BankAccountDto> bankAccountDtoList = bankAccountService.getBankAccountListForUser(2);
+
+        assertThat(bankAccountDtoList.size()).isEqualTo(2);
+        assertThat(bankAccountDtoList.stream().allMatch(bankAccountDto -> bankAccountDto.isValid())).isTrue();
+    }
+
 }

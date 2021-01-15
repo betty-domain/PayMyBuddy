@@ -36,4 +36,10 @@ VALUES ('FR12345','Granger iban ',true,3);
 INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
 VALUES ('FR12345','Weasley iban ',true,4);
 
+INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
+VALUES ('EN 78 945 12','Potter iban EN 78945',false,2);
+
+INSERT INTO `bank_account`(`iban`, `description`, `is_actif`, `user_id`)
+VALUES ('DE 65 4321','Potter iban DE 654321',true,2);
+
 /*``*/

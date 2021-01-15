@@ -47,7 +47,7 @@ public class BankTransferController {
     }
 
     @GetMapping("/transfers")
-    @JsonView(DtoJsonView.Public.class)
+    @JsonView(DtoJsonView.Protected.class)
     public BankTransferListDto getAllTransfersForUser(@Validated @RequestParam Integer userId) throws FunctionalException {
         logger.info("Requête Post sur le endpoint transfers reçue");
 

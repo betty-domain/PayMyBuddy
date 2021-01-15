@@ -1,6 +1,9 @@
 package com.paymybuddy.webapp.service;
 
 import com.paymybuddy.webapp.dto.BankAccountDto;
+import com.paymybuddy.webapp.model.FunctionalException;
+
+import java.util.List;
 
 public interface IBankAccountService {
     /**
@@ -8,13 +11,19 @@ public interface IBankAccountService {
      * @param bankAccountDto
      * @return compte bancaire créé
      */
-    BankAccountDto addBankAccount(BankAccountDto bankAccountDto);
+    BankAccountDto addBankAccount(BankAccountDto bankAccountDto) throws FunctionalException;
 
     /**
-     * suppression d'un compte bancaire
+     * Désactivation d'un compte bancaire
      * @param bankAccountId id du compte à supprimer
      * @return nombre de comptes bancaires supprimés
      */
-    boolean deleteBankAccount(Integer bankAccountId);
+    boolean desactivateBankAccount(Integer bankAccountId) throws FunctionalException;
 
+    /**
+     * Récupère la liste des comptes bancaires actifs pour un user
+     * @param userId id du user
+     * @return Liste des comptes bancaire actifs, liste vide si aucun compte actif
+     */
+    List<BankAccountDto> getBankAccountListForUser(Integer userId) throws FunctionalException;
 }

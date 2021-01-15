@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,7 +34,6 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public BankAccountDto addBankAccount(final BankAccountDto bankAccountDto) throws FunctionalException {
-        //TODO à modifier pour qu'on fasse un update si le compte existait déjà mais qu'il était inactif
         String errorKey = "bankAccount.add.error :";
 
         if (bankAccountDto != null && bankAccountDto.isValid()) {
@@ -42,6 +43,7 @@ public class BankAccountService implements IBankAccountService {
                 logger.info("Vérification que l'iban n'existe pas déjà pour l'utilisateur");
                 Optional<BankAccount> existingBankAccount = bankAccountRepository.findByIbanAndUser_Id(bankAccountDto.getIban(), bankAccountDto.getUserId());
                 if (existingBankAccount.isPresent() && existingBankAccount.get().isActif()) {
+                    logger.info(errorKey + "Iban déjà existant pour cet utilisateur");
                     throw new FunctionalException(errorKey + "Iban déjà existant pour cet utilisateur");
                 } else {
                     BankAccount savedBankAccount = null;
@@ -56,15 +58,17 @@ public class BankAccountService implements IBankAccountService {
                     return bankAccountDtoMapper.mapFromBankAccount(savedBankAccount);
                 }
             } else {
+                logger.info(errorKey + "Utilisateur inconnu");
                 throw new FunctionalException(errorKey + "Utilisateur inconnu");
             }
         } else {
+            logger.info(errorKey + "Données incorrectes");
             throw new FunctionalException(errorKey + " Données incorrectes");
         }
     }
 
     @Override
-    public boolean deleteBankAccount(final Integer bankAccountId) throws FunctionalException {
+    public boolean desactivateBankAccount(final Integer bankAccountId) throws FunctionalException {
         String errorKey = "bankAccount.delete.error :";
         if (bankAccountId == null) {
             throw new FunctionalException(errorKey + "Données incorrectes");
@@ -75,9 +79,36 @@ public class BankAccountService implements IBankAccountService {
                 BankAccount updatingBankAccount = bankAccountRepository.save(existingBankAccount.get());
                 return true;
             } else {
+                logger.info(errorKey + "Compte bancaire inexistant");
                 throw new FunctionalException(errorKey + "Compte bancaire inexistant");
             }
 
+        }
+    }
+
+    @Override
+    public List<BankAccountDto> getBankAccountListForUser(final Integer userId)  throws FunctionalException {
+        String errorKey = "bankAccount.get.error: ";
+        if (userId!=null) {
+            Optional<User> existingUser = userRepository.findById(userId);
+            if (existingUser.isPresent())
+            {
+                List<BankAccount> activeBankAccountList = existingUser.get().getBankAccountList().stream().filter(
+                        bankAccount -> bankAccount.isActif()
+                ).collect(Collectors.toList());
+
+                return bankAccountDtoMapper.mapListFromBankAccountList(activeBankAccountList);
+            }
+            else
+            {
+                logger.info(errorKey + "Utilisateur inexistant");
+                throw new FunctionalException(errorKey + "Utilisateur inexistant");
+            }
+        }
+        else
+        {
+            logger.info(errorKey + "Données invalides");
+            throw new FunctionalException(errorKey + "Données incorrectes");
         }
     }
 }

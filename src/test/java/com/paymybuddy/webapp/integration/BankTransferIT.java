@@ -4,6 +4,7 @@ import com.paymybuddy.webapp.dto.BankTransferDto;
 import com.paymybuddy.webapp.model.BankTransfer;
 import com.paymybuddy.webapp.model.BankTransferOrder;
 import com.paymybuddy.webapp.model.User;
+import com.paymybuddy.webapp.repository.BankAccountRepository;
 import com.paymybuddy.webapp.repository.BankTransferRepository;
 import com.paymybuddy.webapp.repository.UserRepository;
 import com.paymybuddy.webapp.service.IBankTransferService;
@@ -36,6 +37,9 @@ class BankTransferIT {
     @Autowired
     BankTransferRepository bankTransferRepository;
 
+    @Autowired
+    BankAccountRepository bankAccountRepository;
+
     @Test
     void transferToBank() {
 
@@ -47,7 +51,7 @@ class BankTransferIT {
 
         BankTransferDto bankTransferDto = new BankTransferDto();
         bankTransferDto.setUserId(userId);
-        bankTransferDto.setBankAccountId(3);
+        bankTransferDto.setBankAccountId(existingUser.getBankAccountList().get(0).getId());
         bankTransferDto.setAmount(new BigDecimal(20));
 
         BankTransfer bankTransfer = bankTransferService.transferToBank(bankTransferDto);
@@ -65,6 +69,7 @@ class BankTransferIT {
     @Test
     void transferFromBank() {
 
+
         Integer userId = 3;
         List<BankTransfer> existingBankTransferList = bankTransferRepository.findAllByUser_IdOrderByDateDesc(userId);
         User existingUser = userRepositorySpy.findById(userId).get();
@@ -73,7 +78,7 @@ class BankTransferIT {
 
         BankTransferDto bankTransferDto = new BankTransferDto();
         bankTransferDto.setUserId(userId);
-        bankTransferDto.setBankAccountId(3);
+        bankTransferDto.setBankAccountId(existingUser.getBankAccountList().get(0).getId());
         bankTransferDto.setAmount(new BigDecimal(250));
 
         BankTransfer bankTransfer = bankTransferService.transferFromBank(bankTransferDto);

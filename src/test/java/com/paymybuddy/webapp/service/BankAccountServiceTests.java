@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +120,7 @@ public class BankAccountServiceTests {
     }
 
     @Test
-    void addValidBankAccount_DesactivatedBankAccount() {
+    void addValidBankAccount_desactivatedBankAccount() {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setUserId(25);
         bankAccountDto.setDescription("description");
@@ -147,7 +150,7 @@ public class BankAccountServiceTests {
     @Test
     void deleteBankAccountWithIdNull() {
         Exception exception = assertThrows(FunctionalException.class, () -> {
-            bankAccountService.deleteBankAccount(null);
+            bankAccountService.desactivateBankAccount(null);
         });
 
         assertThat(exception.getMessage()).contains("Données incorrectes");
@@ -155,13 +158,13 @@ public class BankAccountServiceTests {
     }
 
     @Test
-    void deleteBankAccount_UnexistingBankAccount()
+    void deleteBankAccount_NonExistingBankAccount()
     {
         int idBankAccount = 15;
         when(bankAccountRepositoryMock.findById(any())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(FunctionalException.class, () -> {
-            bankAccountService.deleteBankAccount(idBankAccount);
+            bankAccountService.desactivateBankAccount(idBankAccount);
         });
 
         assertThat(exception.getMessage()).contains("Compte bancaire inexistant");
@@ -173,7 +176,50 @@ public class BankAccountServiceTests {
         int idBankAccount = 15;
 
         when(bankAccountRepositoryMock.findById(any())).thenReturn(Optional.of(new BankAccount()));
-        assertThat(bankAccountService.deleteBankAccount(idBankAccount)).isTrue();
+        assertThat(bankAccountService.desactivateBankAccount(idBankAccount)).isTrue();
         verify(bankAccountRepositoryMock, Mockito.times(1)).save(any());
+    }
+
+    @Test
+    void getBankAccountListForUser_NullUserId()
+    {
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+            bankAccountService.getBankAccountListForUser(null);
+        });
+
+        assertThat(exception.getMessage()).contains("Données incorrectes");
+    }
+
+    @Test
+    void getBankAccountListForUser_NonExistingUser()
+    {
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+            bankAccountService.getBankAccountListForUser(15);
+        });
+
+        assertThat(exception.getMessage()).contains("Utilisateur inexistant");
+    }
+
+    @Test
+    void getBankAccountListForUser_WithUnactiveBankAccount()
+    {
+        User user = new User();
+        user.setId(25);
+        BankAccount bankAccount = new BankAccount(5,"iban1",false,"descrption1",user);
+        BankAccount bankAccount1 = new BankAccount(50,"iban2",true,"descrption2",user);
+        BankAccount bankAccount2 = new BankAccount(500,"iban3",false,"descrption3",user);
+        List<BankAccount> bankAccountList = new ArrayList<>();
+        bankAccountList.add(bankAccount);
+        bankAccountList.add(bankAccount1);
+        bankAccountList.add(bankAccount2);
+        user.setBankAccountList(bankAccountList);
+
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.of(user));
+
+        List<BankAccountDto> bankAccountDtoList = bankAccountService.getBankAccountListForUser(user.getId());
+
+        assertThat(bankAccountDtoList.size()).isEqualTo(1);
+        assertThat(bankAccountDtoList.get(0).getId()).isEqualTo(bankAccount1.getId());
     }
 }

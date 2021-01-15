@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -21,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
-public class BankAccountControllerTests {
+class BankAccountControllerTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -30,7 +32,7 @@ public class BankAccountControllerTests {
     private IBankAccountService bankAccountService;
 
     @Test
-    public void addBankAccountStatusOK() throws Exception
+    void addBankAccountStatusOK() throws Exception
     {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setDescription("description");
@@ -47,7 +49,7 @@ public class BankAccountControllerTests {
     }
 
     @Test
-    public void addBankAccountWithException() throws Exception
+    void addBankAccountWithException() throws Exception
     {
         BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setDescription("description");
@@ -64,9 +66,9 @@ public class BankAccountControllerTests {
     }
 
     @Test
-    public void deleleBankAccountStatusOk() throws Exception
+    void deleleBankAccountStatusOk() throws Exception
     {
-        when(bankAccountService.deleteBankAccount(anyInt())).thenReturn(true);
+        when(bankAccountService.desactivateBankAccount(anyInt())).thenReturn(true);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/bankAccount").
                 contentType(MediaType.APPLICATION_JSON).param("bankAccountId", "1");
 
@@ -75,9 +77,9 @@ public class BankAccountControllerTests {
     }
 
     @Test
-    public void deleteBankAccountBadRequest() throws Exception
+    void deleteBankAccountBadRequest() throws Exception
     {
-        given(bankAccountService.deleteBankAccount(anyInt())).willThrow(
+        given(bankAccountService.desactivateBankAccount(anyInt())).willThrow(
                 new FunctionalException("Exception Message"));
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/bankAccount").
@@ -87,6 +89,28 @@ public class BankAccountControllerTests {
                 andExpect(status().isBadRequest());
     }
 
+    @Test
+    void getBankAccountListForUser_WithException() throws Exception
+    {
+        given(bankAccountService.getBankAccountListForUser(anyInt())).willThrow(
+                new FunctionalException("Exception Message"));
 
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/bankAccounts").
+                contentType(MediaType.APPLICATION_JSON).param("userId","");
 
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getBankAccountListForUser_StatusOk() throws Exception
+    {
+        when(bankAccountService.getBankAccountListForUser(anyInt())).thenReturn(new ArrayList<>());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/bankAccounts").
+                contentType(MediaType.APPLICATION_JSON).param("userId", "1");
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+
+    }
 }
