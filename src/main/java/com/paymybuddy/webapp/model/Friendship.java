@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.webapp.dto.DtoJsonView;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -30,6 +32,7 @@ public class Friendship {
     private User ami;
 
     @Column(name="is_actif")
+    @JsonView(DtoJsonView.Private.class)
     private boolean isActif;
 
 }
