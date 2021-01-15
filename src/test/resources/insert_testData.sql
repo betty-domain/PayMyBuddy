@@ -1,4 +1,16 @@
+
 use `paymybuddy_test`;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE `fee`;
+TRUNCATE `user_friends`;
+truncate `transaction`;
+truncate `bank_transfer`;
+truncate `bank_account`;
+truncate `user`;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO `user`(`email`,`firstname`,`lastname`,`password`,`balance`)
 VALUES ('updateUser@free.fr','firstname','latname','$2a$12$yc2A75xOtp72Yl8sWplcReJs8Ku0zg6Im7U7W35y5eo5xagomBAOa','25');
