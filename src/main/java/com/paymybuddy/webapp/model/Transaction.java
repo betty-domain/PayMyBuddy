@@ -1,6 +1,5 @@
 package com.paymybuddy.webapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -13,7 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,9 @@ public class Transaction {
     private Integer id;
 
     @NotNull
+    @NotEmpty
+    @Size(max = 200)
+    @Column(length = 200,nullable = false)
     private String description;
 
     @NotNull
