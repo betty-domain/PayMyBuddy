@@ -15,7 +15,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Entity @IdClass(FriendshipId.class)
+@Entity
+@IdClass(FriendshipId.class)
 @Table(name="user_friends")
 public class Friendship {
 

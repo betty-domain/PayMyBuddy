@@ -5,7 +5,6 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,15 +53,15 @@ public class User {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "user")
-    private List<Friendship> friendshipList;
+    private List<Friendship> friendshipList = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "payer")
-    private List<Transaction> transactionOutcomingList;
+    private List<Transaction> transactionOutcomingList= new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "beneficiary")
-    private List<Transaction> transactionIncomingList;
+    private List<Transaction> transactionIncomingList = new ArrayList<>();
 
     /**
      * Retourne l'ensemble des transactions de l'utilisateur émises par ses amis et vers ses amis
@@ -83,10 +82,10 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<BankAccount> bankAccountList;
+    private List<BankAccount> bankAccountList=new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<BankTransfer> bankTransferList;
+    private List<BankTransfer> bankTransferList= new ArrayList<>();
 
 }

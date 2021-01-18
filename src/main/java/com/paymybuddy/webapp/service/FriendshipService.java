@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,9 +39,26 @@ public class FriendshipService implements IFriendshipService {
         Friendship friendship = prepareFriendShip(userId, friendUserId, errorKey);
 
         Optional<Friendship> existingFriendship = friendship.getUser().getFriendshipList().stream().filter(
-                friendshipIterator -> friendshipIterator.getUser().getId().equals(userId) && friendshipIterator.getUser().getId().equals(friendUserId)
+                friendshipIterator -> friendshipIterator.getUser().getId().equals(userId) && friendshipIterator.getAmi().getId().equals(friendUserId)
         ).findFirst();
 
+        if (existingFriendship.isPresent() && existingFriendship.get().isActif())
+        {
+            try {
+                friendship.setActif(false);
+                friendshipRepository.save(friendship);
+                return true;
+            } catch (Exception exception) {
+                logger.error(errorKey + " erreur lors de l'enregsitrement : " + exception.getStackTrace());
+                throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
+            }
+        }
+        else
+        {
+            logger.info(errorKey + "Cette association d'amitié n'existe pas");
+            throw new FunctionalException(errorKey + "Cette association d'amitié n'existe pas");
+        }
+        /*
         if (!existingFriendship.isPresent())
         {
             logger.info(errorKey + "Cette association d'amitié n'existe pas");
@@ -54,7 +73,7 @@ public class FriendshipService implements IFriendshipService {
                 logger.error(errorKey + " erreur lors de l'enregsitrement : " + exception.getStackTrace());
                 throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
             }
-        }
+        }*/
     }
 
     @Override
@@ -92,7 +111,7 @@ public class FriendshipService implements IFriendshipService {
      * @throws FunctionalException exception métiers liées à l'absence de données ou d'utilisateurs
      */
     private Friendship prepareFriendShip(Integer userId, Integer friendUserId, String errorKey) throws FunctionalException {
-        if (userId != null && friendUserId != null) {
+        if (userId != null && friendUserId != null && userId!= friendUserId) {
             Optional<User> existingUser = userRepository.findById(userId);
             if (existingUser.isPresent()) {//si l'utilisateur existe
                 Optional<User> existingFriend = userRepository.findById(friendUserId);
@@ -117,6 +136,37 @@ public class FriendshipService implements IFriendshipService {
 
     @Override
     public FriendshipDTO getFriendForUser(final Integer userId) throws FunctionalException {
-        return null;
+        String errorKey = "friendship.getForUser.error : ";
+        if (userId!=null)
+        {
+            Optional<User> existingUser = userRepository.findById(userId);
+            if (existingUser.isPresent())
+            {
+
+                FriendshipDTO friendshipDTO = new FriendshipDTO();
+                friendshipDTO.setUser(userDtoMapper.mapFromUser(existingUser.get()));
+
+                //on récupère la liste des relations d'amitié actives
+                List<Friendship> friendshipActiveList = existingUser.get().getFriendshipList().stream().filter(
+                        friendship -> friendship.isActif()).collect(Collectors.toList());
+
+                if (friendshipActiveList!=null && !friendshipActiveList.isEmpty()) {
+                    //on extrait la liste des amis de la liste des amitiés actives
+                    List<User> friendsList = friendshipActiveList.stream().map(friendship -> friendship.getAmi()).distinct().collect(Collectors.toList());
+                    friendshipDTO.setFriends(userDtoMapper.mapFromUserList(friendsList));
+                }
+                return  friendshipDTO;
+            }
+            else
+            {
+                logger.info(errorKey + "Utilisateur inexistant");
+                throw new FunctionalException(errorKey + "Utilisateur inexistant");
+            }
+        }
+        else
+        {
+            logger.info(errorKey + "Données incorrectes");
+            throw new FunctionalException(errorKey + "Données incorrectes");
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class FriendshipId implements Serializable {
-    private User user;
-    private User ami;
+    private Integer user;
+    private Integer ami;
 
 }

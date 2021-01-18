@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, FriendshipId> {
 
-    Optional<Friendship> findByUser_IdAndAmi_IdAndActifTrue(Integer userId, Integer amiId);
+    Optional<Friendship> findByIsActifTrueAndUser_IdAndAmi_Id(Integer userId, Integer amiId);
 }
