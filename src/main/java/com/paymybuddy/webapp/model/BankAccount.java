@@ -32,6 +32,7 @@ public class BankAccount {
     @NotNull
     @NotEmpty
     @Size(max = 34)
+    @Column(length = 34,nullable = false)
     private String iban;
 
     @Column(name = "is_actif")
@@ -42,6 +43,7 @@ public class BankAccount {
     @NotNull
     @NotEmpty
     @Size(max = 50)
+    @Column(length = 50,nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
