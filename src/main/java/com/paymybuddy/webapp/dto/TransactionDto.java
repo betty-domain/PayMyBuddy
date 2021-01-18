@@ -1,5 +1,6 @@
 package com.paymybuddy.webapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.paymybuddy.webapp.model.User;
 import lombok.Data;
@@ -29,10 +30,12 @@ public class TransactionDto {
 
     private FeeDto fee;
 
+    @JsonIgnore
     public String getPayerEmail() {
         return this.payer.getEmail();
     }
 
+    @JsonIgnore
     public String getBeneficiaryEmail()
     {
         return this.beneficiary.getEmail();

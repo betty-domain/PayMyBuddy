@@ -42,6 +42,7 @@ public class FriendTransactionControllerTests {
 
         when(friendTransactionService.transferToFriend(incomingTransactionDto)).thenReturn(new TransactionDto());
 
+
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/transaction").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(incomingTransactionDto));
 
