@@ -1,6 +1,7 @@
 package com.paymybuddy.webapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.webapp.model.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,9 +11,15 @@ import java.time.LocalDate;
 @JsonView(DtoJsonView.Public.class)
 public class TransactionDto {
 
-    private UserDto payer;
+    private String payerEmail;
 
-    private UserDto beneficiary;
+    private String beneficiaryEmail;
+
+    @JsonView(DtoJsonView.Private.class)
+    private User payer;
+
+    @JsonView(DtoJsonView.Private.class)
+    private User beneficiary;
 
     private BigDecimal amount;
 
@@ -22,4 +29,12 @@ public class TransactionDto {
 
     private FeeDto fee;
 
+    public String getPayerEmail() {
+        return this.payer.getEmail();
+    }
+
+    public String getBeneficiaryEmail()
+    {
+        return this.beneficiary.getEmail();
+    }
 }

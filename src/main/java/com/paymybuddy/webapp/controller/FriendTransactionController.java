@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.webapp.dto.DtoJsonView;
 import com.paymybuddy.webapp.dto.IncomingTransactionDto;
 import com.paymybuddy.webapp.dto.TransactionDto;
 import com.paymybuddy.webapp.model.FunctionalException;
@@ -20,6 +22,7 @@ public class FriendTransactionController {
     IFriendTransactionService transactionService;
 
     @PostMapping("/transaction")
+    @JsonView(DtoJsonView.Public.class)
     public TransactionDto transferToFriend(@Validated @RequestBody IncomingTransactionDto incomingTransactionDto) throws FunctionalException {
         logger.info("Requête Post sur le endpoint transaction reçue");
 

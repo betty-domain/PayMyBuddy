@@ -87,3 +87,4 @@ VALUES ( 2 , 3, true);
 INSERT INTO `user_friends` (`user_friend_id`, `user_id`, `is_actif`)
 VALUES ( 4 , 3, true);
 
+/* insertions de transactions entre amis  et taxe associées */

@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring", uses = { UserDtoMapper.class, FeeDtoMapper.class })
+@Mapper(componentModel = "spring", uses = { FeeDtoMapper.class })
 public interface TransactionDtoMapper {
 
     @Mappings({

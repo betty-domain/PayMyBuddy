@@ -23,4 +23,27 @@ public class IncomingTransactionDto {
     @Size(max = 200)
     private String description;
 
+    /**
+     * vérifie si les données de l'entité sont valides (not null)
+     * @return true si cvalide, false sinon
+     */
+    public boolean isValid()
+    {
+        if (payerId ==null)
+        {
+            return false;
+        }
+        if (beneficiaryId == null) {
+            return false;
+        }
+        if (amount == null || amount.equals(BigDecimal.ZERO)) {
+            return false;
+        }
+
+        if (description == null || description.isEmpty())
+        {
+            return  false;
+        }
+        return true;
+    }
 }
