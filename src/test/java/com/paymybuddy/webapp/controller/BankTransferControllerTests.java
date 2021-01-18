@@ -2,6 +2,7 @@ package com.paymybuddy.webapp.controller;
 
 import com.paymybuddy.webapp.TestsUtils;
 import com.paymybuddy.webapp.dto.BankTransferDto;
+import com.paymybuddy.webapp.dto.BankTransferListDto;
 import com.paymybuddy.webapp.model.FunctionalException;
 import com.paymybuddy.webapp.service.IBankTransferService;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,5 +97,30 @@ public class BankTransferControllerTests {
 
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getBankTransferListForUser_WithException() throws Exception
+    {
+        given(bankTransferService.getAllTransferForUser(anyInt())).willThrow(
+                new FunctionalException("Exception Message"));
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/transfers").
+                contentType(MediaType.APPLICATION_JSON).param("userId","");
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getBankTransferListForUser_StatusOk() throws Exception
+    {
+        when(bankTransferService.getAllTransferForUser(anyInt())).thenReturn(new BankTransferListDto());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/transfers").
+                contentType(MediaType.APPLICATION_JSON).param("userId", "1");
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+
     }
 }
