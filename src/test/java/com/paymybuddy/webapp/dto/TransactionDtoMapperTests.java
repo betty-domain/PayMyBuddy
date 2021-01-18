@@ -19,11 +19,12 @@ class TransactionDtoMapperTests {
     TransactionDtoMapper transactionDtoMapper;
 
     @Test
-    void mapFromTransaction_WithNullObjects()
+    void mapFromTransaction_WithNullObject()
     {
-        assertThat(transactionDtoMapper.mapFromTransaction(null,null)).isNull();
+        assertThat(transactionDtoMapper.mapFromFee(null)).isNull();
     }
 
+    /*
     @Test
     void mapFromTransaction_WithNullTransaction()
     {
@@ -68,7 +69,7 @@ class TransactionDtoMapperTests {
         assertThat(transactionDto.getAmount()).isEqualTo(transaction.getAmount());
         assertThat(transactionDto.getDate()).isEqualTo(transaction.getDate());
         assertThat(transactionDto.getDescription()).isEqualTo(transaction.getDescription());
-    }
+    }*/
 
     @Test
     void mapFromTransaction_CheckAllFields()
@@ -92,8 +93,9 @@ class TransactionDtoMapperTests {
         fee.setDate(LocalDate.of(2020,5,10));
         fee.setId(5);
         fee.setPercentage100(new BigDecimal(25));
+        fee.setTransaction(transaction);
 
-        TransactionDto transactionDto = transactionDtoMapper.mapFromTransaction(transaction,fee);
+        TransactionDto transactionDto = transactionDtoMapper.mapFromFee(fee);
 
         assertThat(transactionDto.getPayer().getFirstname()).isEqualTo(user.getFirstname());
         assertThat(transactionDto.getBeneficiary().getFirstname()).isEqualTo(beneficiary.getFirstname());

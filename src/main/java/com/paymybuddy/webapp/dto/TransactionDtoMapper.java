@@ -1,7 +1,6 @@
 package com.paymybuddy.webapp.dto;
 
 import com.paymybuddy.webapp.model.Fee;
-import com.paymybuddy.webapp.model.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -10,8 +9,12 @@ import org.mapstruct.Mappings;
 public interface TransactionDtoMapper {
 
     @Mappings({
-            @Mapping(target = "amount", source = "transaction.amount"),
-            @Mapping(target = "date", source = "transaction.date")
+            @Mapping(target = "amount", source = "fee.transaction.amount"),
+            @Mapping(target = "date", source = "fee.transaction.date"),
+            @Mapping(target = "payer", source = "fee.transaction.payer"),
+            @Mapping(target = "beneficiary", source = "fee.transaction.beneficiary"),
+            @Mapping(target = "description", source = "fee.transaction.description"),
+            @Mapping(target = "fee", source = "fee")
     })
-    public TransactionDto mapFromTransaction(Transaction transaction, Fee fee);
+    public TransactionDto mapFromFee(Fee fee);
 }
