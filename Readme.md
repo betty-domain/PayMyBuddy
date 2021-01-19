@@ -12,7 +12,7 @@ Afin de pouvoir interagir avec n'importe quel front, les fonctionnalités sont d
 L'ensemble des éléments de configuration ci-dessous sont présents dans le fichier src/main/resources/application.properties, vous pouvez les modifier si vous le souhaitez.
 
 L'application est déployée sur le serveur Tomcat embarqué, sur le port **9020**.
-L'application fonction avec une base de données **MySQL**.
+L'application fonctionne avec une base de données **MySQL**.
 
 Avant de lancer l'application, vous devez exécuter les scripts SQL suivants, disponibles dans le répertoire src/main/resources/static :
 - schema.sql : qui permet de créer le schéma et d'initialiser la structure de la base de données
@@ -22,7 +22,7 @@ Avant de lancer l'application, vous devez exécuter les scripts SQL suivants, di
 L'ensemble des éléments de configuration ci-dessous sont présents dans le fichier src/test/resources/application.properties, vous pouvez les modifier si vous le souhaitez.
 
 L'application est déployée sur le serveur Tomcat embarqué, sur le port **9021**.
-L'application fonction avec une base de données **MySQL**.
+L'application fonctionne avec une base de données **MySQL**.
 
 Avant de lancer les tests de l'application, vous devez exécuter les scripts SQL suivants, disponibles dans le répertoire src/test/resources/static :
 - schemaTest.sql : qui permet de créer le schéma et d'initialiser la structure de la base de données
