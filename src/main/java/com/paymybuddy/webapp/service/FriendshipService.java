@@ -58,22 +58,6 @@ public class FriendshipService implements IFriendshipService {
             logger.info(errorKey + "Cette association d'amitié n'existe pas");
             throw new FunctionalException(errorKey + "Cette association d'amitié n'existe pas");
         }
-        /*
-        if (!existingFriendship.isPresent())
-        {
-            logger.info(errorKey + "Cette association d'amitié n'existe pas");
-            throw new FunctionalException(errorKey + "Cette association d'amitié n'existe pas");
-        }
-        else {
-            try {
-                friendship.setActif(false);
-                friendshipRepository.save(friendship);
-                return true;
-            } catch (Exception exception) {
-                logger.error(errorKey + " erreur lors de l'enregsitrement : " + exception.getStackTrace());
-                throw new FunctionalException(errorKey + "Erreur lors de l'enregistrement");
-            }
-        }*/
     }
 
     @Override
@@ -148,11 +132,11 @@ public class FriendshipService implements IFriendshipService {
 
                 //on récupère la liste des relations d'amitié actives
                 List<Friendship> friendshipActiveList = existingUser.get().getFriendshipList().stream().filter(
-                        friendship -> friendship.isActif()).collect(Collectors.toList());
+                        Friendship::isActif).collect(Collectors.toList());
 
                 if (friendshipActiveList!=null && !friendshipActiveList.isEmpty()) {
                     //on extrait la liste des amis de la liste des amitiés actives
-                    List<User> friendsList = friendshipActiveList.stream().map(friendship -> friendship.getAmi()).distinct().collect(Collectors.toList());
+                    List<User> friendsList = friendshipActiveList.stream().map(Friendship::getAmi).distinct().collect(Collectors.toList());
                     friendshipDTO.setFriends(userDtoMapper.mapFromUserList(friendsList));
                 }
                 return  friendshipDTO;

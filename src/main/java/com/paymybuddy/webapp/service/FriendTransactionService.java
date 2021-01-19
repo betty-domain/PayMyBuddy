@@ -72,7 +72,6 @@ public class FriendTransactionService implements IFriendTransactionService {
                 transactionRepository.save(transactionToSave);
                 Fee createdFee = feeRepository.save(feeToSave);
 
-                //TODO : à revoir avec Alexandre : est ce mieux de faire un map from l'entité retournée en retour du save et cella passée e paramètre, notamment pour la testatibilité de l'application ? --> obliger de tester les montantss, soldes ... en IT et non en TU
                 return transactionDtoMapper.mapFromFee(createdFee);
             }
             catch (Exception exception)
