@@ -45,10 +45,18 @@ class FriendshipServiceTests {
     void addFriendship_NonExistingUser() {
 
         Integer userId = 5;
-        Integer friendUserId=15;
+        User user = new User();
+        user.setId(userId);
+        user.setFriendshipList(new ArrayList<>());
+
+        String friendEmail = "monemail@gmail.com";
+        User friend = new User();
+        friend.setEmail(friendEmail);
+
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(userRepository.findUserByEmailIgnoreCase(friendEmail)).thenReturn(Optional.of(friend));
         Exception exception = assertThrows(FunctionalException.class, () -> {
-            friendshipService.addFriend(userId, friendUserId);
+            friendshipService.addFriend(userId, friendEmail);
         });
 
         assertThat(exception.getMessage()).contains("Utilisateur inexistant");
@@ -63,14 +71,14 @@ class FriendshipServiceTests {
         user.setId(userId);
         user.setFriendshipList(new ArrayList<>());
 
-        Integer friendUserId=15;
+        String friendEmail = "monemail@gmail.com";
         User friend = new User();
-        friend.setId(friendUserId);
+        friend.setEmail(friendEmail);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userRepository.findById(friendUserId)).thenReturn(Optional.empty());
+        when(userRepository.findUserByEmailIgnoreCase(friendEmail)).thenReturn(Optional.empty());
         Exception exception = assertThrows(FunctionalException.class, () -> {
-            friendshipService.addFriend(userId, friendUserId);
+            friendshipService.addFriend(userId, friendEmail);
         });
 
         assertThat(exception.getMessage()).contains("Ami : Utilisateur inexistant");
@@ -84,9 +92,10 @@ class FriendshipServiceTests {
         user.setId(userId);
         user.setFriendshipList(new ArrayList<>());
 
-        Integer friendUserId=15;
+        String friendEmail = "monemail@gmail.com";
         User friend = new User();
-        friend.setId(friendUserId);
+        friend.setEmail(friendEmail);
+        friend .setId(15);
 
         Friendship friendship = new Friendship();
         friendship.setUser(user);
@@ -96,10 +105,10 @@ class FriendshipServiceTests {
         user.getFriendshipList().add(friendship);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userRepository.findById(friendUserId)).thenReturn(Optional.of(friend));
+        when(userRepository.findUserByEmailIgnoreCase(friendEmail)).thenReturn(Optional.of(friend));
 
         Exception exception = assertThrows(FunctionalException.class, () -> {
-            friendshipService.addFriend(userId, friendUserId);
+            friendshipService.addFriend(userId, friendEmail);
         });
 
         assertThat(exception.getMessage()).contains("Cette association d'amitié existe déjà");
@@ -112,16 +121,16 @@ class FriendshipServiceTests {
         user.setId(userId);
         user.setFriendshipList(new ArrayList<>());
 
-        Integer friendUserId=15;
+        String friendEmail = "monemail@gmail.com";
         User friend = new User();
-        friend.setId(friendUserId);
+        friend.setEmail(friendEmail);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userRepository.findById(friendUserId)).thenReturn(Optional.of(friend));
+        when(userRepository.findUserByEmailIgnoreCase(friendEmail)).thenReturn(Optional.of(friend));
 
         when(friendshipRepositoryMock.save(any())).thenReturn(new Friendship());
 
-        UserDto userDto = friendshipService.addFriend(userId,friendUserId);
+        UserDto userDto = friendshipService.addFriend(userId,friendEmail);
         assertThat(userDto).isNotNull();
     }
 
@@ -132,9 +141,11 @@ class FriendshipServiceTests {
         user.setId(userId);
         user.setFriendshipList(new ArrayList<>());
 
-        Integer friendUserId=15;
+        String friendEmail = "monemail@gmail.com";
         User friend = new User();
-        friend.setId(friendUserId);
+        friend.setEmail(friendEmail);
+        friend.setId(15);
+
 
         Friendship friendship = new Friendship();
         friendship.setUser(user);
@@ -143,12 +154,13 @@ class FriendshipServiceTests {
 
         user.getFriendshipList().add(friendship);
 
+
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userRepository.findById(friendUserId)).thenReturn(Optional.of(friend));
+        when(userRepository.findUserByEmailIgnoreCase(friendEmail)).thenReturn(Optional.of(friend));
 
         when(friendshipRepositoryMock.save(any())).thenReturn(new Friendship());
 
-        UserDto userDto = friendshipService.addFriend(userId,friendUserId);
+        UserDto userDto = friendshipService.addFriend(userId,friendEmail);
         assertThat(userDto).isNotNull();
     }
 

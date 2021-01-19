@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,11 +33,11 @@ class FriendshipControllerTests {
     @Test
     void addUser_StatusOk() throws Exception
     {
-        when(friendshipServiceMock.addFriend(anyInt(),anyInt())).thenReturn(new UserDto());
+        when(friendshipServiceMock.addFriend(anyInt(),anyString())).thenReturn(new UserDto());
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/friendship").
                 contentType(MediaType.APPLICATION_JSON).
                 param("userId","5").
-                param("friendUserId","15");
+                param("friendUserEmail","monemail@free.fr");
 
         mockMvc.perform(builder).
                 andExpect(status().isOk());
@@ -45,7 +46,7 @@ class FriendshipControllerTests {
     @Test
     void addUser_BadRequest() throws Exception
     {
-        given(friendshipServiceMock.addFriend(anyInt(),anyInt())).willThrow(
+        given(friendshipServiceMock.addFriend(anyInt(),anyString())).willThrow(
                 new FunctionalException("Exception Message"));
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/friendship").

@@ -26,10 +26,10 @@ public class FriendshipController {
 
     @PostMapping("/friendship")
     @JsonView(DtoJsonView.Public.class)
-    public UserDto addFriend(@Validated @RequestParam Integer userId, @RequestParam Integer friendUserId) throws Exception
+    public UserDto addFriend(@Validated @RequestParam Integer userId, @RequestParam String friendUserEmail) throws Exception
     {
         logger.info("Requête Post reçue sur le endpoint friendship");
-        UserDto userDto = friendshipService.addFriend(userId,friendUserId);
+        UserDto userDto = friendshipService.addFriend(userId,friendUserEmail);
 
         logger.info("Réponse suite à un post sur le endpoint friendship transmise");
         return userDto;

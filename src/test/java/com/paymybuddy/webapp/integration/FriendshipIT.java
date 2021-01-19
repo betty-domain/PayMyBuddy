@@ -28,9 +28,9 @@ public class FriendshipIT {
     void addFriendshipTest()
     {
         Integer userId=2;
-        Integer friendId=3;
+        String friendEmail="hermione.granger@gmail.com";
 
-        UserDto affectedFriend = friendshipService.addFriend(userId,friendId);
+        UserDto affectedFriend = friendshipService.addFriend(userId,friendEmail);
 
         assertThat(affectedFriend).isNotNull();
 

@@ -16,10 +16,10 @@ public interface IFriendshipService {
     /**
      * Ajoute un ami pour un utilisateur
      * @param userId id de l'utilisateur pour lequel on souhaite ajouter un ami
-     * @param friendUserId id de l'ami à ajouter
+     * @param friendUserEmail email de l'ami à ajouter
      * @return ami ajouté sur l'utilisateur
      */
-    UserDto addFriend(Integer userId, Integer friendUserId) throws FunctionalException;
+    UserDto addFriend(Integer userId, String friendUserEmail) throws FunctionalException;
 
     /**
      * Récupère la liste des amis actifs d'un utilisateur
