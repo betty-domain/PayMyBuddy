@@ -78,4 +78,12 @@ public class FriendTransactionIT {
         assertThat(transactionDto.getDescription()).isEqualTo(incomingTransactionDto.getDescription());
         assertThat(transactionDto.getAmount()).isEqualTo(incomingTransactionDto.getAmount());
     }
+
+    @Test
+    void getAllTransactionForUser()
+    {
+        Integer userId = 2;
+
+        assertThat(transactionService.getAllTransactionForUser(userId)).size().isGreaterThan(0);
+    }
 }
