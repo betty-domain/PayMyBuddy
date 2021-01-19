@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -197,8 +197,8 @@ public class FriendTransactionServiceTests {
 
         when(userRepositoryMock.findById(incomingTransactionDto.getPayerId())).thenReturn(Optional.of(payer));
         when(userRepositoryMock.findById(incomingTransactionDto.getBeneficiaryId())).thenReturn(Optional.of(beneficiary));
-        LocalDate mockLocalDateNow = LocalDate.of(2012,5,25);
-        when(dateUtils.getNowLocalDate()).thenReturn(mockLocalDateNow);
+        LocalDateTime mockLocalDateNow = LocalDateTime.of(2012,5,25,15,10,0);
+        when(dateUtils.getNowLocalDateTime()).thenReturn(mockLocalDateNow);
 
         when(feeRepositoryMock.save(any())).thenReturn(new Fee());
 

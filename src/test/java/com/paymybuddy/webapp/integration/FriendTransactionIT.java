@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.SqlGroup;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -54,8 +54,8 @@ public class FriendTransactionIT {
         incomingTransactionDto.setDescription("description");
         incomingTransactionDto.setAmount(new BigDecimal(100));
 
-        LocalDate mockLocalDateNow = LocalDate.of(2012,5,25);
-        when(dateUtils.getNowLocalDate()).thenReturn(mockLocalDateNow);
+        LocalDateTime mockLocalDateNow = LocalDateTime.of(2012,5,25,15,10,0);
+        when(dateUtils.getNowLocalDateTime()).thenReturn(mockLocalDateNow);
 
         TransactionDto transactionDto = transactionService.transferToFriend(incomingTransactionDto);
 

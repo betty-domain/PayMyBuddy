@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -222,12 +222,12 @@ class BankTransferServiceTests {
         BankAccount bankAccount = new BankAccount(5, "iban", false, "description", user);
         user.getBankAccountList().add(bankAccount);
         List<BankTransfer> bankTransferList = new ArrayList<>();
-        BankTransfer bankTransfer = new BankTransfer(452, new BigDecimal(54.25), LocalDate.of(2014, 3, 12), BankTransferOrder.FROM_BANK);
+        BankTransfer bankTransfer = new BankTransfer(452, new BigDecimal(54.25), LocalDateTime.of(2014, 3, 12,15,10,0), BankTransferOrder.FROM_BANK);
         bankTransfer.setBankAccount(bankAccount);
         bankTransfer.setUser(user);
         bankTransferList.add(bankTransfer);
 
-        BankTransfer bankTransfer2 = new BankTransfer(220, new BigDecimal(5401), LocalDate.of(2010, 1, 1), BankTransferOrder.TO_BANK);
+        BankTransfer bankTransfer2 = new BankTransfer(220, new BigDecimal(5401), LocalDateTime.of(2010, 1, 1,15,10,0), BankTransferOrder.TO_BANK);
         bankTransfer2.setBankAccount(bankAccount);
         bankTransfer2.setUser(user);
         bankTransferList.add(bankTransfer2);
@@ -239,7 +239,7 @@ class BankTransferServiceTests {
         BankAccount bankAccount2 = new BankAccount(15, "iban", true, "description", user);
         user.getBankAccountList().add(bankAccount2);
         List<BankTransfer> bankTransferList_2 = new ArrayList<>();
-        BankTransfer bankTransfer3 = new BankTransfer(45, new BigDecimal(54.25), LocalDate.of(2014, 3, 12), BankTransferOrder.FROM_BANK);
+        BankTransfer bankTransfer3 = new BankTransfer(45, new BigDecimal(54.25), LocalDateTime.of(2014, 3, 12,15,10,0), BankTransferOrder.FROM_BANK);
         bankTransfer3.setBankAccount(bankAccount2);
         bankTransfer3.setUser(user);
         bankTransferList_2.add(bankTransfer3);

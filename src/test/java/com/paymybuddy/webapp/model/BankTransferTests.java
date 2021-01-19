@@ -3,21 +3,17 @@ package com.paymybuddy.webapp.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.paymybuddy.webapp.dto.BankTransferDto;
-import net.bytebuddy.asm.Advice;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class BankTransferTests {
@@ -48,7 +44,7 @@ public class BankTransferTests {
         bankTransfer.setAmount(new BigDecimal(350.58));
         bankTransfer.setId(bankTransferId);
         bankTransfer.setTransferOrder(BankTransferOrder.TO_BANK);
-        bankTransfer.setDate(LocalDate.of(2010,5,15));
+        bankTransfer.setDate(LocalDateTime.of(2010,5,15,15,10,0));
         bankTransfer.setUser(user);
         bankTransfer.setBankAccount(bankAccount);
 

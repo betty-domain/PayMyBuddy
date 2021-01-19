@@ -26,7 +26,7 @@ public abstract class BankTransferDtoMapper {
 
     @AfterMapping
     protected void setDateOfTransfer(@MappingTarget BankTransfer bankTransfer) {
-        bankTransfer.setDate(dateUtils.getNowLocalDate());
+        bankTransfer.setDate(dateUtils.getNowLocalDateTime());
     }
 
     @Autowired

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ class TransactionDtoMapperTests {
     {
         Transaction transaction = new Transaction();
         transaction.setAmount(new BigDecimal(15.5));
-        transaction.setDate(LocalDate.of(2020,4,12));
+        transaction.setDate(LocalDateTime.of(2020,4,12,10,0,0));
         transaction.setDescription("description");
         User user = new User();
         user.setFirstname("firstname");
@@ -46,7 +46,7 @@ class TransactionDtoMapperTests {
 
         Fee fee = new Fee();
         fee.setAmount(new BigDecimal(25.52));
-        fee.setDate(LocalDate.of(2020,5,10));
+        fee.setDate(LocalDateTime.of(2020,5,10,10,0,0));
         fee.setId(5);
         fee.setPercentage100(new BigDecimal(25));
         fee.setTransaction(transaction);

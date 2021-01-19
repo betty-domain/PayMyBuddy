@@ -1,12 +1,13 @@
 package com.paymybuddy.webapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.paymybuddy.webapp.model.BankTransferOrder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class BankTransferDto {
@@ -27,7 +28,8 @@ public class BankTransferDto {
     private BankTransferOrder transferOrder;
 
     @JsonView(DtoJsonView.Public.class)
-    private LocalDate date;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
 
     public boolean isValid() {
         if (userId == null) {

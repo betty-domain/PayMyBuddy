@@ -119,7 +119,7 @@ public class FriendTransactionService implements IFriendTransactionService {
                         transaction.setPayer(existingPayer.get());
                         transaction.setAmount(incomingTransactionDto.getAmount());
                         transaction.setDescription(incomingTransactionDto.getDescription());
-                        transaction.setDate(dateUtils.getNowLocalDate());
+                        transaction.setDate(dateUtils.getNowLocalDateTime());
                         return transaction;
                     } else {
                         logger.info(errorKey + "le payeur et le bénéificiare ne sont pas des amis, impossible de faire une transaction entre eux ");

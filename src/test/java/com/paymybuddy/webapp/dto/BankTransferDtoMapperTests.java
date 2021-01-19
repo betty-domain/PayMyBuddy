@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class BankTransferDtoMapperTests {
         int userId= 52;
         int bankAccountId=45;
 
-        LocalDate localDateNowMock = LocalDate.of(2015,10,25);
-        when(dateUtils.getNowLocalDate()).thenReturn(localDateNowMock);
+        LocalDateTime localDateNowMock = LocalDateTime.of(2015,10,25,15,10,0);
+        when(dateUtils.getNowLocalDateTime()).thenReturn(localDateNowMock);
 
         BankAccount bankAccount = new BankAccount();
         bankAccount.setUser(new User());
@@ -54,7 +54,7 @@ public class BankTransferDtoMapperTests {
         bankTransferDto.setAmount(new BigDecimal(250.58));
         bankTransferDto.setUserId(userId);
         bankTransferDto.setBankAccountId(bankAccountId);
-        bankTransferDto.setDate(LocalDate.of(2000,1,1));
+        bankTransferDto.setDate(LocalDateTime.of(2000,1,1,15,10,0));
         bankTransferDto.setTransferOrder(BankTransferOrder.TO_BANK);
 
         BankTransfer bankTransfer = bankTransferDtoMapper.mapToBankTransfer(bankTransferDto,bankAccount);
@@ -85,7 +85,7 @@ public class BankTransferDtoMapperTests {
         BankTransfer bankTransfer = new BankTransfer();
         bankTransfer.setTransferOrder(BankTransferOrder.TO_BANK);
         bankTransfer.setAmount(new BigDecimal(54.25));
-        bankTransfer.setDate(LocalDate.of(2020,10,15));
+        bankTransfer.setDate(LocalDateTime.of(2020,10,15,15,10,0));
         bankTransfer.setId(42);
         bankTransfer.setBankAccount(bankAccount);
         bankTransfer.setUser(user);
@@ -116,7 +116,7 @@ public class BankTransferDtoMapperTests {
         BankTransfer bankTransfer = new BankTransfer();
         bankTransfer.setTransferOrder(BankTransferOrder.TO_BANK);
         bankTransfer.setAmount(new BigDecimal(54.25));
-        bankTransfer.setDate(LocalDate.of(2020,10,15));
+        bankTransfer.setDate(LocalDateTime.of(2020,10,15,15,10,0));
         bankTransfer.setId(42);
         bankTransfer.setBankAccount(bankAccount);
         bankTransfer.setUser(user);

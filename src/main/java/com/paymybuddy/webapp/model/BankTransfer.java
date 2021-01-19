@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -33,8 +33,8 @@ public class BankTransfer {
     private BigDecimal amount;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
-    private LocalDate date;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
@@ -52,7 +52,7 @@ public class BankTransfer {
 
     public BankTransfer(){}
 
-    public BankTransfer(Integer id, BigDecimal amount, LocalDate date, BankTransferOrder bankTransferOrder)
+    public BankTransfer(Integer id, BigDecimal amount, LocalDateTime date, BankTransferOrder bankTransferOrder)
     {
         this.id = id;
         this.amount=amount;
