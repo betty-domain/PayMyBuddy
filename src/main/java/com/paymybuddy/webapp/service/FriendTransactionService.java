@@ -155,7 +155,7 @@ public class FriendTransactionService implements IFriendTransactionService {
     }
 
     @Override
-    public List<TransactionDto> getAllTransactionForUser(final Integer userId) {
+    public List<TransactionDto> getAllTransactionForUser(final Integer userId) throws FunctionalException {
         String errorKey = "transaction.get.error : ";
         if (userId==null)
         {
