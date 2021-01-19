@@ -3,6 +3,7 @@ DROP SCHEMA if exists `paymybuddy_test`;
 CREATE SCHEMA if not exists `paymybuddy_test`;
 
 use `paymybuddy_test`;
+
 CREATE TABLE user (
                       user_id INT AUTO_INCREMENT NOT NULL,
                       email VARCHAR(100) NOT NULL,
@@ -15,8 +16,8 @@ CREATE TABLE user (
 
 
 CREATE UNIQUE INDEX user_email_idx
- ON user
- ( email );
+    ON user
+        ( email );
 
 CREATE TABLE bank_account (
                               bank_account_id INT AUTO_INCREMENT NOT NULL,
@@ -31,7 +32,7 @@ CREATE TABLE bank_account (
 CREATE TABLE bank_transfer (
                                bank_transfer_id INT AUTO_INCREMENT NOT NULL,
                                amount DECIMAL(12,2) NOT NULL,
-                               date DATE NOT NULL,
+                               date DATETIME NOT NULL,
                                transfer_order INT NOT NULL,
                                user_id INT NOT NULL,
                                bank_account_id INT NOT NULL,
@@ -62,7 +63,7 @@ CREATE TABLE fee (
                      fee_id INT AUTO_INCREMENT NOT NULL,
                      amount DECIMAL(12,2) NOT NULL,
                      percentage100 DECIMAL(4,2) NOT NULL,
-                     date DATE NOT NULL,
+                     date DATETIME NOT NULL,
                      user_id INT NOT NULL,
                      transaction_id INT NOT NULL,
                      PRIMARY KEY (fee_id)
