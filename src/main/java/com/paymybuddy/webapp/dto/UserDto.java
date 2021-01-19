@@ -1,9 +1,7 @@
 package com.paymybuddy.webapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -14,6 +12,8 @@ import java.math.BigDecimal;
 @Data
 @JsonView(DtoJsonView.Public.class)
 public class UserDto {
+
+    private Integer id;
 
     @NotNull
     @NotEmpty

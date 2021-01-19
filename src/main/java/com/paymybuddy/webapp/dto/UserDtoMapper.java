@@ -19,12 +19,14 @@ public abstract class UserDtoMapper {
     private EncryptUtils encryptUtils;
 
     @Mappings({
+            @Mapping(target = "id",ignore = true),
             @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword"),
             @Mapping(target="balance", ignore = true)
     })
     public abstract User mapToUser(UserDto userDto);
 
     @Mappings({
+            @Mapping(target = "id",ignore = true),
             @Mapping(target = "password", source = "password", qualifiedByName = "encryptPassword")
     })
     public abstract void updateUserFromUserDto(UserDto userDto, @MappingTarget User user);

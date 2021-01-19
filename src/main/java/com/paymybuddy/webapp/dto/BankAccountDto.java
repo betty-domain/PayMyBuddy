@@ -13,7 +13,6 @@ import java.util.List;
 @JsonView(DtoJsonView.Public.class)
 public class BankAccountDto {
 
-    @JsonView(DtoJsonView.Private.class)
     private Integer id;
 
     @NotNull
