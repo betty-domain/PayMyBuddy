@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,6 +87,8 @@ public class FriendTransactionService implements IFriendTransactionService {
         }
     }
 
+
+
     /**
      * Vérifie les données fourni et l'existence des utilisateurs pour créer un objet transaction
      *
@@ -149,5 +152,28 @@ public class FriendTransactionService implements IFriendTransactionService {
         fee.setAmount(transactionToFee.getAmount().multiply(PayMyBuddyConstants.FEE_PERCENTAGE100.divide(new BigDecimal(100))));
 
         return fee;
+    }
+
+    @Override
+    public List<TransactionDto> getAllTransactionForUser(final Integer userId) {
+        String errorKey = "transaction.get.error : ";
+        if (userId==null)
+        {
+            logger.info(errorKey + "Données invalides");
+            throw new FunctionalException(errorKey + "Données incorrectes");
+        }
+        else
+        {
+            Optional<User> existingUser = userRepository.findById(userId);
+            if (existingUser.isPresent())
+            {
+                return transactionDtoMapper.mapFromFeeList(existingUser.get().getFeeList());
+            }
+            else
+            {
+                logger.info(errorKey + "Utilisateur inexistant");
+                throw new FunctionalException(errorKey+"Utilisateur inexistant");
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.paymybuddy.webapp.integration;
 import com.paymybuddy.webapp.dto.IncomingTransactionDto;
 import com.paymybuddy.webapp.dto.TransactionDto;
 import com.paymybuddy.webapp.model.PayMyBuddyConstants;
+import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.repository.UserRepository;
 import com.paymybuddy.webapp.service.IFriendTransactionService;
 import com.paymybuddy.webapp.utils.DateUtils;
@@ -40,10 +41,12 @@ public class FriendTransactionIT {
     void transferToFriend()
     {
         Integer payerId = 3;
-        BigDecimal actualPayerBalance = userRepository.findById(payerId).get().getBalance();
+        User payer = userRepository.findById(payerId).get();
+        BigDecimal actualPayerBalance = payer.getBalance();
 
         Integer beneficiaryId=2;
-        BigDecimal actualBeneficiaryBalance = userRepository.findById(beneficiaryId).get().getBalance();
+        User beneficiary = userRepository.findById(beneficiaryId).get();
+        BigDecimal actualBeneficiaryBalance = beneficiary.getBalance();
 
         IncomingTransactionDto incomingTransactionDto = new IncomingTransactionDto();
         incomingTransactionDto.setPayerId(payerId);
@@ -63,9 +66,12 @@ public class FriendTransactionIT {
         assertThat(transactionDto.getFee().getAmount()).isEqualTo(incomingTransactionDto.getAmount().multiply(PayMyBuddyConstants.FEE_PERCENTAGE100.divide(new BigDecimal(100))));
         assertThat(transactionDto.getFee().getDate()).isEqualTo(mockLocalDateNow);
 
+        BigDecimal newPayerBalance = payer.getBalance();
+        BigDecimal newBeneficiaryBalance = beneficiary.getBalance();
+
         //vérification des soldes du payeur et du bénéficiaire
-        assertThat(transactionDto.getPayer().getBalance()).isEqualTo(actualPayerBalance.subtract(incomingTransactionDto.getAmount()).subtract(transactionDto.getFee().getAmount()));
-        assertThat(transactionDto.getBeneficiary().getBalance()).isEqualTo(actualBeneficiaryBalance.add(incomingTransactionDto.getAmount()));
+        assertThat(newPayerBalance).isEqualTo(actualPayerBalance.subtract(incomingTransactionDto.getAmount()).subtract(transactionDto.getFee().getAmount()));
+        assertThat(newBeneficiaryBalance).isEqualTo(actualBeneficiaryBalance.add(incomingTransactionDto.getAmount()));
 
         //vérification des autres informations sur la transaction
         assertThat(transactionDto.getDate()).isEqualTo(mockLocalDateNow);

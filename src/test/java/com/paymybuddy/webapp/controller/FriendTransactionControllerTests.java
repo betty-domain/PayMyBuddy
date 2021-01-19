@@ -16,7 +16,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,6 +65,32 @@ public class FriendTransactionControllerTests {
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/transaction").
                 contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(incomingTransactionDto));
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getAllTransactionForUser() throws Exception
+    {
+
+        when(friendTransactionService.getAllTransactionForUser(anyInt())).thenReturn(new ArrayList<>());
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/transaction").
+                contentType(MediaType.APPLICATION_JSON).param("userId","5");
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllTransactionWithException() throws Exception
+    {
+
+        given(friendTransactionService.getAllTransactionForUser(anyInt())).willThrow(new FunctionalException("Exception Message"));
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/transaction").
+                contentType(MediaType.APPLICATION_JSON).param("userId","5");
 
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest());

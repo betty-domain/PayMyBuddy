@@ -63,22 +63,9 @@ public class User {
     @OneToMany(mappedBy = "beneficiary")
     private List<Transaction> transactionIncomingList = new ArrayList<>();
 
-    /**
-     * Retourne l'ensemble des transactions de l'utilisateur émises par ses amis et vers ses amis
-     * @return liste des transactions
-     */
     @JsonIgnore
-    public List<Transaction> getAllTransaction()
-    {
-        List<Transaction> transactionList = new ArrayList<>();
-        if (this.transactionIncomingList!=null) {
-            transactionList.addAll(this.transactionIncomingList);
-        }
-        if (transactionOutcomingList!=null) {
-            transactionList.addAll(this.transactionOutcomingList);
-        }
-        return  transactionList;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<Fee> feeList = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")

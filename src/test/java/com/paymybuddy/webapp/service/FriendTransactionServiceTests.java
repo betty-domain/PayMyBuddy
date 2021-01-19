@@ -17,11 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -219,6 +221,41 @@ public class FriendTransactionServiceTests {
         assertThat(transactionDto.getDescription()).isEqualTo(incomingTransactionDto.getDescription());
         assertThat(transactionDto.getAmount()).isEqualTo(incomingTransactionDto.getAmount());
     */
+    }
+
+    @Test
+    void getAllTransactionForUser_NullId()
+    {
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+            transactionService.getAllTransactionForUser(null);
+        });
+
+        assertThat(exception.getMessage()).contains("Données incorrectes");
+    }
+
+    @Test
+    void getAllTransactionForUser_NotExistingUser()
+    {
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(FunctionalException.class, () -> {
+            transactionService.getAllTransactionForUser(6);
+        });
+
+        assertThat(exception.getMessage()).contains("Utilisateur inexistant");
+    }
+
+    @Test
+    void getAllTransactionForUser_Ok()
+    {
+        User user = new User();
+        user.setId(10);
+        user.getFeeList().add(new Fee());
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.of(user));
+
+        List<TransactionDto> transactionDto = transactionService.getAllTransactionForUser(user.getId());
+
+        assertThat(transactionDto.size()).isEqualTo(1);
     }
 
 }

@@ -53,9 +53,7 @@ class TransactionDtoMapperTests {
 
         TransactionDto transactionDto = transactionDtoMapper.mapFromFee(fee);
 
-        assertThat(transactionDto.getPayer()).isEqualTo(user);
         assertThat(transactionDto.getPayerEmail()).isEqualTo(user.getEmail());
-        assertThat(transactionDto.getBeneficiary()).isEqualTo(beneficiary);
         assertThat(transactionDto.getBeneficiaryEmail()).isEqualTo(beneficiary.getEmail());
         assertThat(transactionDto.getAmount()).isEqualTo(transaction.getAmount());
         assertThat(transactionDto.getDate()).isEqualTo(transaction.getDate());
